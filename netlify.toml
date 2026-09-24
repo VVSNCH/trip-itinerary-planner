@@ -1,0 +1,9 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback, otherwise refreshing a deep link 404s
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
