@@ -20,6 +20,10 @@ export const sizes = {
   sheetMaxHeight: '92dvh',
   sheetSideWidth: 'min(100vw, 420px)',
 
+  headerHeight: '64px',
+  containerMaxWidth: '1200px',
+  logoMark: '28px',
+
   menuMinWidth: '200px',
   tileMinWidth: '72px',
   emptyStateMaxWidth: '420px',
