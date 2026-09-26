@@ -15,3 +15,5 @@ export const EASING = {
 export const STAGGER_MS = 40
 
 export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
+
+export const TOAST_AUTO_HIDE_MS = 4000

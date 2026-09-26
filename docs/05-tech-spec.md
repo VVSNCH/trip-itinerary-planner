@@ -155,6 +155,7 @@ exist in the application.
 | `theme/radii.ts` | Corner radii |
 | `theme/shadows.ts` | Elevation levels |
 | `theme/zIndex.ts` | Stacking order for map, panels, sheets, dialogs and toasts |
+| `theme/sizes.ts` | Fixed dimensions: control heights, icon and badge sizes, border widths |
 | `theme/tokens.ts` | Imports the files above, plus `constants/breakpoints.ts` and `constants/motion.ts`, into one typed object |
 | `theme/theme.ts` | Maps the tokens into MUI's `createTheme` |
 | `theme/GlobalStyles.tsx` | CSS reset, `@font-face` declarations, base `body` styles, Leaflet style overrides |
@@ -194,9 +195,12 @@ not pass MUI's full props through.
 | `Tabs` | MUI Tabs | Day selector strip |
 | `Toast` | MUI Snackbar | Non-blocking notices (copied link, route fallback) |
 | `Skeleton` | MUI Skeleton | Loading placeholders |
+| `StopBadge` | — | Numbered stop marker on place cards |
+| `ProgressBar` | MUI LinearProgress | Planned time per day on the timeline |
+| `icons` | MUI icons | The only icon set; features import icons from here |
 
 The existing sibling folders keep their roles and follow the same rules:
-- `components/feedback/`: `EmptyState`, `ErrorState`, `ErrorBoundary`
+- `components/feedback/`: `EmptyState`, `Notice` (inline error, offline and warning messages), `ErrorBoundary`
 - `components/layout/`: `AppLayout`, `Header`, `PageContainer`, `SplitView`
 
 This list is the starting set, not a ceiling. When a screen needs something
