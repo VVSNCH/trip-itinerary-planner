@@ -1,3 +1,24 @@
+const HEX_COLOUR = '/#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\\b/'
+
+const visualRules = [
+  {
+    selector: `Literal[value=${HEX_COLOUR}]`,
+    message: 'Colours live in src/theme/colors.ts.',
+  },
+  {
+    selector: `TemplateElement[value.raw=${HEX_COLOUR}]`,
+    message: 'Colours live in src/theme/colors.ts.',
+  },
+  {
+    selector: 'Literal[value=/\\d+(\\.\\d+)?px\\b/]',
+    message: 'Sizes live in src/theme (spacing, sizes, radii).',
+  },
+  {
+    selector: 'TemplateElement[value.raw=/(^|[^\\w.-])\\d+(\\.\\d+)?px\\b/]',
+    message: 'Sizes live in src/theme (spacing, sizes, radii).',
+  },
+]
+
 module.exports = {
   root: true,
   ignorePatterns: ['dist', 'coverage', 'node_modules'],
@@ -31,5 +52,35 @@ module.exports = {
       globals: { describe: 'readonly', it: 'readonly', expect: 'readonly', vi: 'readonly' },
     },
     { files: ['*.cjs', 'vite.config.ts'], env: { node: true } },
+    {
+      files: ['src/**/*.{ts,tsx}'],
+      excludedFiles: ['src/theme/**'],
+      rules: { 'no-restricted-syntax': ['error', ...visualRules] },
+    },
+    {
+      files: ['src/**/*.{ts,tsx}'],
+      excludedFiles: ['src/theme/**', 'src/components/**'],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            patterns: [
+              {
+                group: ['@mui/*', '@emotion/*'],
+                message: 'Use the components in src/components instead.',
+              },
+            ],
+          },
+        ],
+        'no-restricted-syntax': [
+          'error',
+          ...visualRules,
+          {
+            selector: "JSXAttribute[name.name='sx']",
+            message: 'sx is only for src/components/common.',
+          },
+        ],
+      },
+    },
   ],
 }
