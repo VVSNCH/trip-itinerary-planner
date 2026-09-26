@@ -53,7 +53,10 @@ trip-itinerary-planner/
 │   │   ├── layout/
 │   │   └── feedback/
 │   ├── context/
-│   │   ├── TripContext.tsx
+│   │   ├── TripContext.ts
+│   │   ├── TripProvider.tsx
+│   │   ├── useTrips.ts
+│   │   ├── usePersistTrips.ts
 │   │   ├── tripReducer.ts
 │   │   └── actions.ts
 │   ├── hooks/
@@ -257,17 +260,18 @@ by side above.
 ## 5. State contract
 
 ```
-TripContext
-  state    { trips: Trip[], status: 'loading' | 'ready' | 'error' }
-  dispatch (action) => void
+useTrips()
+  trips            Trip[]
+  dispatch         (action) => void
+  storageWasReset  true when saved data could not be read on startup
 ```
 
 Actions are named for the user's intent, not the data change:
 
 ```
-TRIPS_LOADED        CREATE_TRIP        UPDATE_TRIP        DELETE_TRIP
-ADD_PLACE           REMOVE_PLACE       MOVE_PLACE         REORDER_PLACE
-UPDATE_PLACE        IMPORT_TRIP
+CREATE_TRIP        UPDATE_TRIP        DELETE_TRIP
+ADD_PLACE          REMOVE_PLACE       MOVE_PLACE
+UPDATE_PLACE       IMPORT_TRIP
 ```
 
 Ids are sequential integers assigned by `utils/nextId.ts`, which derives the
@@ -278,9 +282,17 @@ section 2.
 handles both within-day and cross-day movement, because they are the same
 operation with different arguments.
 
-The reducer is pure and has no knowledge of localStorage. Persistence is a
-subscription: a debounced effect writes the trips array whenever it changes.
-This keeps the reducer trivially testable.
+localStorage is read synchronously when the provider mounts, so there is no
+loading state and no load action. Timestamps are passed in by the action
+creators in `actions.ts`, which keeps the reducer free of `Date.now()`.
+
+When a trip's dates change, day N keeps its places and takes the new date.
+Shortening a trip drops the last days; extending it adds empty ones.
+
+The reducer is pure and has no knowledge of localStorage, which keeps it
+trivially testable. Persistence is a subscription: a debounced effect writes the
+trips array whenever it changes, and a `pagehide` listener writes immediately so
+closing the tab cannot lose the last edit.
 
 ## 6. Environment configuration
 
