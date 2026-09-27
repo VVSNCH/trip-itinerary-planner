@@ -42,6 +42,20 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
       }
     }
 
+    case 'IMPORT_TRIP': {
+      const { trip, now } = action.payload
+      const imported: Trip = {
+        id: nextId(state.trips),
+        name: trip.name,
+        startDate: trip.startDate,
+        endDate: trip.endDate,
+        days: trip.days,
+        createdAt: now,
+        updatedAt: now,
+      }
+      return { trips: [...state.trips, imported] }
+    }
+
     case 'DELETE_TRIP':
       return { trips: state.trips.filter((trip) => trip.id !== action.payload.tripId) }
   }

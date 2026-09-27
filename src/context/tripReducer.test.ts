@@ -148,3 +148,18 @@ describe('DELETE_TRIP', () => {
     expect(next.trips).toEqual(state.trips)
   })
 })
+
+describe('IMPORT_TRIP', () => {
+  it('adds the trip under a fresh local id, keeping its days and places', () => {
+    const trip = lisbon()
+    const state = create(empty, 'Existing', '2026-10-01', '2026-10-01')
+    const next = tripReducer(state, {
+      type: 'IMPORT_TRIP',
+      payload: { trip, now: LATER },
+    })
+
+    expect(next.trips.map((t) => t.id)).toEqual([1, 2])
+    expect(next.trips[1]?.days).toEqual(trip.days)
+    expect(next.trips[1]).toMatchObject({ createdAt: LATER, updatedAt: LATER })
+  })
+})
