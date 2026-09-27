@@ -19,6 +19,7 @@ export interface TextFieldProps {
   startIcon?: ReactNode
   endAdornment?: ReactNode
   autoFocus?: boolean
+  readOnly?: boolean
 }
 
 export const TextField = ({
@@ -30,6 +31,7 @@ export const TextField = ({
   startIcon,
   endAdornment,
   type = 'text',
+  readOnly = false,
   ...rest
 }: TextFieldProps) => {
   const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -54,7 +56,7 @@ export const TextField = ({
       onChange={handleChange}
       helperText={helper}
       fullWidth
-      inputProps={{ maxLength }}
+      inputProps={{ maxLength, readOnly }}
       InputProps={{
         startAdornment: startIcon ? (
           <InputAdornment position="start">{startIcon}</InputAdornment>

@@ -14,6 +14,7 @@ export interface ButtonProps {
   disabled?: boolean
   autoFocus?: boolean
   type?: 'button' | 'submit'
+  form?: string
   onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
