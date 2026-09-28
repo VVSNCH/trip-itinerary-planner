@@ -35,6 +35,7 @@ export interface SearchPanelProps {
   trip: Trip
   dayId: number
   onClose?: () => void
+  withHeader?: boolean
 }
 
 const SKELETON_ROWS = 4
@@ -49,7 +50,12 @@ const errorNotices: Record<
   failed: { tone: 'info', message: MESSAGES.SEARCH_FAILED, canRetry: true },
 }
 
-export const SearchPanel = ({ trip, dayId, onClose }: SearchPanelProps) => {
+export const SearchPanel = ({
+  trip,
+  dayId,
+  onClose,
+  withHeader = true,
+}: SearchPanelProps) => {
   const { dispatch } = useTrips()
   const [query, setQuery] = useState('')
   const viewbox = toViewbox(trip.days.flatMap((day) => day.places))
@@ -73,21 +79,23 @@ export const SearchPanel = ({ trip, dayId, onClose }: SearchPanelProps) => {
 
   return (
     <Panel>
-      <Header>
-        <TitleBlock>
-          <Text variant="overline">
-            {COPY.addingTo(dayNumber, formatShortDay(day.date))}
-          </Text>
-          <Text variant="title" as="h2">
-            {LABELS.SEARCH_PLACES}
-          </Text>
-        </TitleBlock>
-        {onClose && (
-          <IconButton label={LABELS.CLOSE} onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        )}
-      </Header>
+      {withHeader && (
+        <Header>
+          <TitleBlock>
+            <Text variant="overline">
+              {COPY.addingTo(dayNumber, formatShortDay(day.date))}
+            </Text>
+            <Text variant="title" as="h2">
+              {LABELS.SEARCH_PLACES}
+            </Text>
+          </TitleBlock>
+          {onClose && (
+            <IconButton label={LABELS.CLOSE} onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          )}
+        </Header>
+      )}
 
       <TextField
         label={LABELS.SEARCH_PLACES}

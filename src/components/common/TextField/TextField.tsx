@@ -8,7 +8,7 @@ export interface TextFieldProps {
   value: string
   onChange: (value: string) => void
   id?: string
-  type?: 'text' | 'time'
+  type?: 'text' | 'time' | 'number'
   placeholder?: string
   helperText?: ReactNode
   error?: boolean

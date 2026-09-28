@@ -1,0 +1,106 @@
+import styled, { css } from 'styled-components'
+
+export const Row = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(3)};
+`
+
+export const Handle = styled.span`
+  display: inline-flex;
+  color: ${({ theme }) => theme.colors.textMuted};
+
+  & svg {
+    font-size: ${({ theme }) => theme.sizes.iconMd};
+  }
+`
+
+export const Content = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(1)};
+  min-width: 0;
+`
+
+// Selecting is the name's job; its hit area stretches over the whole card.
+export const SelectButton = styled.button`
+  padding: 0;
+  border: none;
+  background: none;
+  color: ${({ theme }) => theme.colors.textPrimary};
+  font-size: ${({ theme }) => theme.textStyles.subheading.fontSize};
+  font-weight: ${({ theme }) => theme.textStyles.subheading.fontWeight};
+  line-height: ${({ theme }) => theme.textStyles.subheading.lineHeight};
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: ${({ theme }) => theme.radii.lg};
+  }
+
+  &:focus-visible {
+    outline: none;
+  }
+
+  &:focus-visible::after {
+    box-shadow: 0 0 0 ${({ theme }) => theme.sizes.focusRing}
+      ${({ theme }) => theme.colors.focusRing};
+  }
+`
+
+export const Meta = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(2)};
+  margin-top: ${({ theme }) => theme.space(1)};
+`
+
+// Controls that must stay clickable above the stretched select button.
+export const Above = styled.div`
+  position: relative;
+  z-index: 1;
+`
+
+const textButton = css`
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+`
+
+export const NoteButton = styled.button`
+  ${textButton}
+  display: block;
+  width: 100%;
+  margin-top: ${({ theme }) => theme.space(1)};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: ${({ theme }) => theme.textStyles.caption.fontSize};
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`
+
+export const AddNoteButton = styled.button`
+  ${textButton}
+  display: inline-flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(1)};
+  margin-top: ${({ theme }) => theme.space(1)};
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.textStyles.caption.fontSize};
+  font-weight: ${({ theme }) => theme.fontWeight.medium};
+
+  & svg {
+    font-size: ${({ theme }) => theme.sizes.iconSm};
+  }
+`
