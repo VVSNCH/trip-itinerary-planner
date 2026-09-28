@@ -190,3 +190,43 @@ describe('ADD_PLACE', () => {
     expect(next?.updatedAt).toBe(LATER)
   })
 })
+
+describe('UPDATE_PLACE', () => {
+  it('changes only the given fields of the matching place', () => {
+    const trip = lisbon()
+    const next = tripReducer(
+      { trips: [trip] },
+      {
+        type: 'UPDATE_PLACE',
+        payload: {
+          tripId: trip.id,
+          placeId: 3,
+          changes: { time: '12:15', note: 'Tickets online' },
+          now: LATER,
+        },
+      }
+    ).trips[0]
+
+    expect(next?.days[2]?.places[0]).toMatchObject({
+      id: 3,
+      name: 'P2',
+      time: '12:15',
+      note: 'Tickets online',
+      durationMins: null,
+    })
+    expect(next?.days[0]?.places).toEqual(trip.days[0]?.places)
+  })
+})
+
+describe('REMOVE_PLACE', () => {
+  it('removes the place from whichever day holds it', () => {
+    const trip = lisbon()
+    const next = tripReducer(
+      { trips: [trip] },
+      { type: 'REMOVE_PLACE', payload: { tripId: trip.id, placeId: 4, now: LATER } }
+    ).trips[0]
+
+    expect(next?.days[3]?.places).toEqual([])
+    expect(next?.days.flatMap((day) => day.places)).toHaveLength(4)
+  })
+})

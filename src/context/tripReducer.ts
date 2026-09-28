@@ -1,4 +1,4 @@
-import type { Trip } from '@/types'
+import type { Day, Place, Trip } from '@/types'
 import { deriveDays, redateDays } from '@/features/trips/utils/days'
 import { nextId } from '@/utils/nextId'
 import type { TripAction } from './actions'
@@ -6,6 +6,17 @@ import type { TripAction } from './actions'
 export interface TripState {
   trips: Trip[]
 }
+
+const updateDays = (
+  state: TripState,
+  tripId: number,
+  now: string,
+  update: (days: Day[]) => Day[]
+): TripState => ({
+  trips: state.trips.map((trip) =>
+    trip.id === tripId ? { ...trip, days: update(trip.days), updatedAt: now } : trip
+  ),
+})
 
 export const tripReducer = (state: TripState, action: TripAction): TripState => {
   switch (action.type) {
@@ -58,30 +69,44 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
 
     case 'ADD_PLACE': {
       const { tripId, dayId, place, now } = action.payload
-      return {
-        trips: state.trips.map((trip) => {
-          if (trip.id !== tripId) return trip
-          const id = nextId(trip.days.flatMap((day) => day.places))
-          const added = {
-            id,
-            name: place.name,
-            address: place.address,
-            category: place.category,
-            lat: place.lat,
-            lng: place.lng,
-            time: null,
-            note: null,
-            durationMins: null,
-          }
-          return {
-            ...trip,
-            days: trip.days.map((day) =>
-              day.id === dayId ? { ...day, places: [...day.places, added] } : day
-            ),
-            updatedAt: now,
-          }
-        }),
-      }
+      return updateDays(state, tripId, now, (days) => {
+        const added: Place = {
+          id: nextId(days.flatMap((day) => day.places)),
+          name: place.name,
+          address: place.address,
+          category: place.category,
+          lat: place.lat,
+          lng: place.lng,
+          time: null,
+          note: null,
+          durationMins: null,
+        }
+        return days.map((day) =>
+          day.id === dayId ? { ...day, places: [...day.places, added] } : day
+        )
+      })
+    }
+
+    case 'UPDATE_PLACE': {
+      const { tripId, placeId, changes, now } = action.payload
+      return updateDays(state, tripId, now, (days) =>
+        days.map((day) => ({
+          ...day,
+          places: day.places.map((place) =>
+            place.id === placeId ? { ...place, ...changes } : place
+          ),
+        }))
+      )
+    }
+
+    case 'REMOVE_PLACE': {
+      const { tripId, placeId, now } = action.payload
+      return updateDays(state, tripId, now, (days) =>
+        days.map((day) => ({
+          ...day,
+          places: day.places.filter((place) => place.id !== placeId),
+        }))
+      )
     }
 
     case 'DELETE_TRIP':

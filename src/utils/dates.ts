@@ -29,3 +29,5 @@ export const countDays = (startISO: string, endISO: string) =>
   differenceInCalendarDays(parseISO(endISO), parseISO(startISO)) + 1
 
 export const formatShortDay = (iso: string) => format(parseISO(iso), 'EEE d')
+
+export const formatLongDay = (iso: string) => format(parseISO(iso), 'EEEE d MMMM')
