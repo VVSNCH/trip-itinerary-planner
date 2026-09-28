@@ -1,14 +1,13 @@
-import { eachDayOfInterval, format, isAfter, parseISO } from 'date-fns'
+import { eachDayOfInterval, isAfter, parseISO } from 'date-fns'
 import type { Day } from '@/types'
+import { toISODate } from '@/utils/dates'
 import { nextId } from '@/utils/nextId'
-
-const ISO_DATE = 'yyyy-MM-dd'
 
 export const datesInRange = (startDate: string, endDate: string): string[] => {
   const start = parseISO(startDate)
   const end = parseISO(endDate)
   if (isAfter(start, end)) return []
-  return eachDayOfInterval({ start, end }).map((date) => format(date, ISO_DATE))
+  return eachDayOfInterval({ start, end }).map(toISODate)
 }
 
 export const deriveDays = (startDate: string, endDate: string): Day[] =>
@@ -26,3 +25,8 @@ export const redateDays = (days: Day[], startDate: string, endDate: string): Day
     return existing ? { ...existing, date } : { id: id++, date, places: [] }
   })
 }
+
+export const daysRemovedByRedate = (days: Day[], startDate: string, endDate: string) =>
+  days
+    .slice(datesInRange(startDate, endDate).length)
+    .filter((day) => day.places.length > 0)

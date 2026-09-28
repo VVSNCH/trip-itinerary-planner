@@ -12,16 +12,52 @@ export const MESSAGES = {
   GENERIC_ERROR: 'Something went wrong. Try again.',
 } as const
 
-export const CONFIRM = {
-  DELETE_TRIP: 'Delete this trip? This cannot be undone.',
-  SHRINK_DATES: 'Shortening the trip removes days that have places on them. Continue?',
-} as const
-
 export const LABELS = {
   APP_NAME: 'Itinerary Planner',
   TRIPS: 'Trips',
   NEW_TRIP: 'New trip',
   BACK_TO_TRIPS: 'Back to trips',
+  SAMPLE_TRIP: 'Try a sample trip',
+  TRIP_NAME: 'Trip name',
+  START: 'Start',
+  END: 'End',
+  CREATE: 'Create',
+  SAVE: 'Save',
+  CANCEL: 'Cancel',
+  RENAME: 'Rename',
+  CHANGE_DATES: 'Change dates',
+  DELETE: 'Delete',
+  TRIP_ACTIONS: 'Trip actions',
+  UPCOMING: 'Upcoming',
+  PAST: 'Past',
+  PREVIOUS_MONTH: 'Previous month',
+  NEXT_MONTH: 'Next month',
+  NOT_SET: 'Not set',
+} as const
+
+export const DIALOGS = {
+  NEW_TRIP: 'New trip',
+  RENAME_TRIP: 'Rename trip',
+  CHANGE_DATES: 'Change dates',
+  SHRINK_TITLE: 'Shorten this trip?',
+  SHRINK_CONFIRM: 'Remove and continue',
+  DELETE_TITLE: 'Delete this trip?',
+  DELETE_CONFIRM: 'Delete trip',
+} as const
+
+export const VALIDATION = {
+  NAME_REQUIRED: 'Give the trip a name',
+  DATES_REQUIRED: 'Pick a start and an end date',
+} as const
+
+export const TRIP_NAME_MAX_LENGTH = 60
+
+export const COPY = {
+  tripsSaved: (tripCount: string) => `${tripCount}, saved in this browser`,
+  removedPlaces: (dayLabel: string, placeCount: string, verb: 'has' | 'have') =>
+    `${dayLabel} ${verb} ${placeCount}. Shortening the trip will remove them.`,
+  deleteTrip: (name: string) =>
+    `“${name}” and all of its places will be removed. This can’t be undone.`,
 } as const
 
 export const EMPTY_STATES = {

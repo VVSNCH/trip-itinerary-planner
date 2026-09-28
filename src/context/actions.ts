@@ -1,3 +1,7 @@
+import type { Trip } from '@/types'
+
+export type TripDraft = Pick<Trip, 'name' | 'startDate' | 'endDate' | 'days'>
+
 export interface TripInput {
   name: string
   startDate: string
@@ -11,6 +15,7 @@ export type TripAction =
       payload: Partial<TripInput> & { tripId: number; now: string }
     }
   | { type: 'DELETE_TRIP'; payload: { tripId: number } }
+  | { type: 'IMPORT_TRIP'; payload: { trip: TripDraft; now: string } }
 
 const now = () => new Date().toISOString()
 
@@ -27,4 +32,9 @@ export const updateTrip = (tripId: number, changes: Partial<TripInput>): TripAct
 export const deleteTrip = (tripId: number): TripAction => ({
   type: 'DELETE_TRIP',
   payload: { tripId },
+})
+
+export const importTrip = (trip: TripDraft): TripAction => ({
+  type: 'IMPORT_TRIP',
+  payload: { trip, now: now() },
 })

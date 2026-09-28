@@ -24,6 +24,8 @@ export const sizes = {
   containerMaxWidth: '1200px',
   logoMark: '28px',
 
+  thumbnailHeight: '176px',
+
   menuMinWidth: '200px',
   tileMinWidth: '72px',
   emptyStateMaxWidth: '420px',
