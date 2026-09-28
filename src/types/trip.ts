@@ -32,3 +32,8 @@ export interface Coordinates {
   lat: number
   lng: number
 }
+
+export interface PlaceSearchResult extends PlaceCandidate {
+  key: string
+  area: string | null
+}
