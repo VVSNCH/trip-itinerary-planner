@@ -56,6 +56,34 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
       return { trips: [...state.trips, imported] }
     }
 
+    case 'ADD_PLACE': {
+      const { tripId, dayId, place, now } = action.payload
+      return {
+        trips: state.trips.map((trip) => {
+          if (trip.id !== tripId) return trip
+          const id = nextId(trip.days.flatMap((day) => day.places))
+          const added = {
+            id,
+            name: place.name,
+            address: place.address,
+            category: place.category,
+            lat: place.lat,
+            lng: place.lng,
+            time: null,
+            note: null,
+            durationMins: null,
+          }
+          return {
+            ...trip,
+            days: trip.days.map((day) =>
+              day.id === dayId ? { ...day, places: [...day.places, added] } : day
+            ),
+            updatedAt: now,
+          }
+        }),
+      }
+    }
+
     case 'DELETE_TRIP':
       return { trips: state.trips.filter((trip) => trip.id !== action.payload.tripId) }
   }

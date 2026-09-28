@@ -1,6 +1,6 @@
 export const MESSAGES = {
-  SEARCH_EMPTY: 'No places matched that search.',
-  SEARCH_TOO_SHORT: 'Type at least three characters.',
+  SEARCH_EMPTY_HINT:
+    'Check the spelling, or try a category and neighbourhood, like “viewpoint Graça”.',
   SEARCH_RATE_LIMITED: 'Search is busy. Wait a moment and try again.',
   SEARCH_FAILED: 'Place search is unavailable right now.',
   ROUTE_FALLBACK: 'Showing direct lines. Road routing is unavailable.',
@@ -33,6 +33,10 @@ export const LABELS = {
   PREVIOUS_MONTH: 'Previous month',
   NEXT_MONTH: 'Next month',
   NOT_SET: 'Not set',
+  DAYS: 'Days',
+  SEARCH_PLACES: 'Search places',
+  CLEAR_SEARCH: 'Clear search',
+  CLOSE: 'Close',
 } as const
 
 export const DIALOGS = {
@@ -56,6 +60,13 @@ export const COPY = {
   tripsSaved: (tripCount: string) => `${tripCount}, saved in this browser`,
   removedPlaces: (dayLabel: string, placeCount: string, verb: 'has' | 'have') =>
     `${dayLabel} ${verb} ${placeCount}. Shortening the trip will remove them.`,
+  day: (dayNumber: number) => `Day ${dayNumber}`,
+  addingTo: (dayNumber: number, date: string) => `Adding to Day ${dayNumber} · ${date}`,
+  addToDay: (placeName: string, dayNumber: number) =>
+    `Add ${placeName} to Day ${dayNumber}`,
+  onDay: (dayNumber: number) => `On Day ${dayNumber}`,
+  searchTooShort: (minLength: number) => `Type at least ${minLength} characters.`,
+  searchNoMatch: (query: string) => `No places match “${query}”`,
   deleteTrip: (name: string) =>
     `“${name}” and all of its places will be removed. This can’t be undone.`,
 } as const

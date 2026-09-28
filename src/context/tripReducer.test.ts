@@ -163,3 +163,30 @@ describe('IMPORT_TRIP', () => {
     expect(next.trips[1]).toMatchObject({ createdAt: LATER, updatedAt: LATER })
   })
 })
+
+describe('ADD_PLACE', () => {
+  const candidate = {
+    name: 'Miradouro da Graça',
+    address: 'Largo da Graça, 1170-165 Lisboa',
+    category: 'viewpoint',
+    lat: 38.7163,
+    lng: -9.1316,
+  }
+
+  it('appends to the chosen day with an id unique across the whole trip', () => {
+    const trip = lisbon()
+    const next = tripReducer(
+      { trips: [trip] },
+      {
+        type: 'ADD_PLACE',
+        payload: { tripId: trip.id, dayId: 2, place: candidate, now: LATER },
+      }
+    ).trips[0]
+
+    const dayTwo = next?.days[1]?.places ?? []
+    expect(dayTwo.map((place) => place.name)).toEqual(['P1', 'Miradouro da Graça'])
+    expect(dayTwo[1]).toMatchObject({ id: 6, time: null, note: null, durationMins: null })
+    expect(next?.days[0]).toBe(trip.days[0])
+    expect(next?.updatedAt).toBe(LATER)
+  })
+})

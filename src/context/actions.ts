@@ -1,4 +1,4 @@
-import type { Trip } from '@/types'
+import type { PlaceCandidate, Trip } from '@/types'
 
 export type TripDraft = Pick<Trip, 'name' | 'startDate' | 'endDate' | 'days'>
 
@@ -16,6 +16,10 @@ export type TripAction =
     }
   | { type: 'DELETE_TRIP'; payload: { tripId: number } }
   | { type: 'IMPORT_TRIP'; payload: { trip: TripDraft; now: string } }
+  | {
+      type: 'ADD_PLACE'
+      payload: { tripId: number; dayId: number; place: PlaceCandidate; now: string }
+    }
 
 const now = () => new Date().toISOString()
 
@@ -37,4 +41,13 @@ export const deleteTrip = (tripId: number): TripAction => ({
 export const importTrip = (trip: TripDraft): TripAction => ({
   type: 'IMPORT_TRIP',
   payload: { trip, now: now() },
+})
+
+export const addPlace = (
+  tripId: number,
+  dayId: number,
+  place: PlaceCandidate
+): TripAction => ({
+  type: 'ADD_PLACE',
+  payload: { tripId, dayId, place, now: now() },
 })
