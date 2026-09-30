@@ -1,7 +1,7 @@
 import Divider from '@mui/material/Divider'
 import MuiMenu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import { useId, useState, type MouseEvent, type ReactNode } from 'react'
+import { useId, useRef, useState, type MouseEvent, type ReactNode } from 'react'
 import { tokens } from '@/theme'
 import { IconButton } from '../IconButton/IconButton'
 import { MoreIcon } from '../icons'
@@ -26,6 +26,7 @@ export const Menu = ({ label, items }: MenuProps) => {
   const [anchor, setAnchor] = useState<HTMLElement | null>(null)
   const menuId = useId()
   const isOpen = anchor !== null
+  const chosen = useRef<MenuItemConfig | null>(null)
 
   const handleOpen = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation()
@@ -34,9 +35,16 @@ export const Menu = ({ label, items }: MenuProps) => {
 
   const handleClose = () => setAnchor(null)
 
+  // Runs once the menu has closed and handed focus back, so an action that
+  // opens an editor or dialog keeps the focus it takes.
   const handleSelect = (item: MenuItemConfig) => {
+    chosen.current = item
     handleClose()
-    item.onSelect()
+  }
+
+  const handleExited = () => {
+    chosen.current?.onSelect()
+    chosen.current = null
   }
 
   const children = items.flatMap((item) => {
@@ -76,6 +84,7 @@ export const Menu = ({ label, items }: MenuProps) => {
         anchorEl={anchor}
         open={isOpen}
         onClose={handleClose}
+        TransitionProps={{ onExited: handleExited }}
         onClick={(event) => event.stopPropagation()}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}

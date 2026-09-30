@@ -1,7 +1,7 @@
 import { EMPTY_STATES } from '@/constants'
 import { StatusPage } from '@/components/layout'
+import PlannerView from '@/features/itinerary/components/PlannerView'
 import { useTrip } from '@/features/trips/hooks/useTrip'
-import { summarizeTrip } from '@/features/trips/utils/summary'
 
 export const PlannerPage = () => {
   const trip = useTrip()
@@ -15,5 +15,5 @@ export const PlannerPage = () => {
     )
   }
 
-  return <StatusPage title={trip.name} description={summarizeTrip(trip)} />
+  return <PlannerView trip={trip} />
 }

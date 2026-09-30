@@ -1,4 +1,6 @@
-import type { Trip } from '@/types'
+import type { Place, PlaceCandidate, Trip } from '@/types'
+
+export type PlaceChanges = Partial<Pick<Place, 'time' | 'durationMins' | 'note'>>
 
 export type TripDraft = Pick<Trip, 'name' | 'startDate' | 'endDate' | 'days'>
 
@@ -16,6 +18,15 @@ export type TripAction =
     }
   | { type: 'DELETE_TRIP'; payload: { tripId: number } }
   | { type: 'IMPORT_TRIP'; payload: { trip: TripDraft; now: string } }
+  | {
+      type: 'ADD_PLACE'
+      payload: { tripId: number; dayId: number; place: PlaceCandidate; now: string }
+    }
+  | {
+      type: 'UPDATE_PLACE'
+      payload: { tripId: number; placeId: number; changes: PlaceChanges; now: string }
+    }
+  | { type: 'REMOVE_PLACE'; payload: { tripId: number; placeId: number; now: string } }
 
 const now = () => new Date().toISOString()
 
@@ -37,4 +48,27 @@ export const deleteTrip = (tripId: number): TripAction => ({
 export const importTrip = (trip: TripDraft): TripAction => ({
   type: 'IMPORT_TRIP',
   payload: { trip, now: now() },
+})
+
+export const addPlace = (
+  tripId: number,
+  dayId: number,
+  place: PlaceCandidate
+): TripAction => ({
+  type: 'ADD_PLACE',
+  payload: { tripId, dayId, place, now: now() },
+})
+
+export const updatePlace = (
+  tripId: number,
+  placeId: number,
+  changes: PlaceChanges
+): TripAction => ({
+  type: 'UPDATE_PLACE',
+  payload: { tripId, placeId, changes, now: now() },
+})
+
+export const removePlace = (tripId: number, placeId: number): TripAction => ({
+  type: 'REMOVE_PLACE',
+  payload: { tripId, placeId, now: now() },
 })

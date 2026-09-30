@@ -26,6 +26,7 @@ export const sizes = {
 
   thumbnailHeight: '176px',
 
+  sidePanelWidth: '420px',
   menuMinWidth: '200px',
   tileMinWidth: '72px',
   emptyStateMaxWidth: '420px',
