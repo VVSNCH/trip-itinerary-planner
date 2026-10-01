@@ -48,33 +48,37 @@ beforeEach(() => localStorage.clear())
 
 it('reorders a place with Ctrl and the arrow keys', () => {
   renderDayTwo()
-  const first = screen.getByRole('button', { name: 'Mosteiro dos Jerónimos' })
+  const first = screen.getByRole('button', { name: 'Ekambareswarar Temple' })
 
   fireEvent.keyDown(first, { key: 'ArrowDown', ctrlKey: true })
 
   expect(stopNames()).toEqual([
-    'Pastéis de Belém',
-    'Mosteiro dos Jerónimos',
-    'Torre de Belém',
-    'MAAT',
+    'Kamakshi Amman Temple',
+    'Ekambareswarar Temple',
+    'Kailasanathar Temple',
+    'Varadharaja Perumal Temple',
   ])
-  expect(screen.getByText('Mosteiro dos Jerónimos moved to stop 2.')).toBeInTheDocument()
+  expect(screen.getByText('Ekambareswarar Temple moved to stop 2.')).toBeInTheDocument()
 })
 
 it('moves a place to the next day with Ctrl and the right arrow', () => {
   renderDayTwo()
 
-  fireEvent.keyDown(screen.getByRole('button', { name: 'MAAT' }), {
+  fireEvent.keyDown(screen.getByRole('button', { name: 'Varadharaja Perumal Temple' }), {
     key: 'ArrowRight',
     ctrlKey: true,
   })
 
-  expect(stopNames()).not.toContain('MAAT')
-  expect(screen.getByText('MAAT moved to Day 3.')).toBeInTheDocument()
+  expect(stopNames()).not.toContain('Varadharaja Perumal Temple')
+  expect(
+    screen.getByText('Varadharaja Perumal Temple moved to Day 3.')
+  ).toBeInTheDocument()
 })
 
 it('ignores arrow keys pressed without Ctrl', () => {
   renderDayTwo()
-  fireEvent.keyDown(screen.getByRole('button', { name: 'MAAT' }), { key: 'ArrowUp' })
-  expect(stopNames().at(-1)).toBe('MAAT')
+  fireEvent.keyDown(screen.getByRole('button', { name: 'Varadharaja Perumal Temple' }), {
+    key: 'ArrowUp',
+  })
+  expect(stopNames().at(-1)).toBe('Varadharaja Perumal Temple')
 })
