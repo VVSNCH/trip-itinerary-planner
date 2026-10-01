@@ -14,12 +14,14 @@ export const NOMINATIM = {
   MIN_QUERY_LENGTH: 3,
 } as const
 
+// The FOSSGIS server has a walking profile; the OSRM demo server only drives.
 export const OSRM = {
   ROUTE_URL: readEnv(
     env.VITE_OSRM_URL,
-    'https://router.project-osrm.org/route/v1/driving'
+    'https://routing.openstreetmap.de/routed-foot/route/v1/foot'
   ),
   MAX_WAYPOINTS: 25,
+  DEBOUNCE_MS: 300,
 } as const
 
 export const TILES = {

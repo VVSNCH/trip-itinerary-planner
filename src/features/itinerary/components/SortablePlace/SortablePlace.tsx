@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
+import { tokens } from '@/theme'
 import type { Place } from '@/types'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { useKeyboardMove } from '../../dnd/useKeyboardMove'
@@ -39,6 +40,16 @@ export const SortablePlace = ({
     onDragEnd
   )
   const handleKeyDown = useKeyboardMove({ onMoveBy, onMoveToDay })
+  const { isSelected } = cardActions
+
+  // A stop chosen on the map scrolls into view in the list.
+  useEffect(() => {
+    if (!isSelected) return
+    dropRef.current?.scrollIntoView?.({
+      block: 'nearest',
+      behavior: tokens.motion.reduced ? 'auto' : 'smooth',
+    })
+  }, [isSelected, dropRef])
 
   return (
     <li ref={dropRef}>
