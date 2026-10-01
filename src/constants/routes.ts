@@ -13,4 +13,5 @@ export const PARAMS = {
   DAY: 'day',
   PLACE: 'place',
   PANEL: 'panel',
+  VIEW: 'view',
 } as const

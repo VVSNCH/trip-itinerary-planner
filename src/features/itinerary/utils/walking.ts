@@ -21,9 +21,9 @@ const formatDistance = (meters: number) =>
     ? `${Math.max(10, Math.round(meters / 10) * 10)} m`
     : `${(meters / METERS_PER_KM).toFixed(1)} km`
 
+export const walkMinutes = (from: Coordinates, to: Coordinates) =>
+  Math.max(1, Math.round(distanceMeters(from, to) / WALK_METERS_PER_MINUTE))
+
 // "4 min walk · 300 m"
-export const describeWalk = (from: Coordinates, to: Coordinates) => {
-  const meters = distanceMeters(from, to)
-  const minutes = Math.max(1, Math.round(meters / WALK_METERS_PER_MINUTE))
-  return `${minutes} min walk · ${formatDistance(meters)}`
-}
+export const describeWalk = (from: Coordinates, to: Coordinates) =>
+  `${walkMinutes(from, to)} min walk · ${formatDistance(distanceMeters(from, to))}`

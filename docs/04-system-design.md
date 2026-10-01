@@ -197,7 +197,7 @@ failure path rather than an assumption of availability.
 | Service | Used for | Failure mode | Mitigation |
 |---|---|---|---|
 | Nominatim | Place search | Rate limit, 429 | Debounce at 500ms, cache results per query, show a clear message |
-| OSRM | Route geometry | Timeout, 5xx | Straight-line fallback, request cancellation |
+| OSRM (FOSSGIS walking server) | Route geometry | Timeout, 5xx | Straight-line fallback, request cancellation, cache per stop list |
 | OSM tiles | Map imagery | Slow or missing tiles | Leaflet's own tile handling, neutral background |
 
 All three are wrapped behind a service module. No component calls fetch
