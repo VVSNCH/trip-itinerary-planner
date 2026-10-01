@@ -1,0 +1,279 @@
+{
+  "name": "Tamil Nadu temple trail",
+  "startDate": "2026-12-14",
+  "endDate": "2026-12-18",
+  "days": [
+    {
+      "id": 1,
+      "date": "2026-12-14",
+      "places": [
+        {
+          "id": 1,
+          "name": "Kapaleeshwarar Temple",
+          "address": "Vinayaka Nagar Colony, Mylapore, Chennai, Tamil Nadu 600004",
+          "category": "place of worship",
+          "lat": 13.0339,
+          "lng": 80.2697,
+          "time": "06:30",
+          "durationMins": 90,
+          "note": "Go early for the morning pooja. Leave footwear at the counter outside."
+        },
+        {
+          "id": 2,
+          "name": "Rayar's Mess",
+          "address": "Arundale Street, Mylapore, Chennai, Tamil Nadu 600004",
+          "category": "restaurant",
+          "lat": 13.0343,
+          "lng": 80.2678,
+          "time": "08:15",
+          "durationMins": 45,
+          "note": "Tiny place, big queue. Pongal, vada and filter coffee."
+        },
+        {
+          "id": 3,
+          "name": "Parthasarathy Temple",
+          "address": "Singarachari Street, Triplicane, Chennai, Tamil Nadu 600005",
+          "category": "place of worship",
+          "lat": 13.054,
+          "lng": 80.277,
+          "time": "09:30",
+          "durationMins": 75,
+          "note": "8th century Vishnu temple. Closes around 12:00, so don't push this later."
+        },
+        {
+          "id": 4,
+          "name": "Ashtalakshmi Temple",
+          "address": "Elliot's Beach Road, Besant Nagar, Chennai, Tamil Nadu 600090",
+          "category": "place of worship",
+          "lat": 12.9952,
+          "lng": 80.2717,
+          "time": "16:30",
+          "durationMins": 60,
+          "note": null
+        },
+        {
+          "id": 5,
+          "name": "Elliot's Beach",
+          "address": "Besant Nagar, Chennai, Tamil Nadu 600090",
+          "category": "beach",
+          "lat": 12.9989,
+          "lng": 80.2721,
+          "time": "17:45",
+          "durationMins": 60,
+          "note": "Sunset walk and sundal from the carts."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "date": "2026-12-15",
+      "places": [
+        {
+          "id": 6,
+          "name": "Ekambareswarar Temple",
+          "address": "Ekambaranathar Sannathi Street, Kanchipuram, Tamil Nadu 631502",
+          "category": "place of worship",
+          "lat": 12.8475,
+          "lng": 79.6997,
+          "time": "07:00",
+          "durationMins": 90,
+          "note": "One of the five elemental Shiva temples (earth). Look for the sacred mango tree in the inner courtyard."
+        },
+        {
+          "id": 7,
+          "name": "Kamakshi Amman Temple",
+          "address": "Kamakshi Amman Sannathi Street, Kanchipuram, Tamil Nadu 631502",
+          "category": "place of worship",
+          "lat": 12.8402,
+          "lng": 79.7036,
+          "time": "09:00",
+          "durationMins": 60,
+          "note": null
+        },
+        {
+          "id": 8,
+          "name": "Kailasanathar Temple",
+          "address": "Pillaiyarpalayam, Kanchipuram, Tamil Nadu 631501",
+          "category": "place of worship",
+          "lat": 12.8427,
+          "lng": 79.6895,
+          "time": "10:30",
+          "durationMins": 60,
+          "note": "Oldest structure in the city, built by the Pallavas in sandstone. Quiet and worth the detour."
+        },
+        {
+          "id": 9,
+          "name": "Varadharaja Perumal Temple",
+          "address": "West Mada Street, Little Kanchipuram, Kanchipuram, Tamil Nadu 631501",
+          "category": "place of worship",
+          "lat": 12.8191,
+          "lng": 79.7246,
+          "time": "16:00",
+          "durationMins": 90,
+          "note": "Look up in the hundred pillar hall for the carved stone chain."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "date": "2026-12-16",
+      "places": [
+        {
+          "id": 10,
+          "name": "Sri Ranganathaswamy Temple",
+          "address": "Srirangam, Tiruchirappalli, Tamil Nadu 620006",
+          "category": "place of worship",
+          "lat": 10.8627,
+          "lng": 78.6898,
+          "time": "06:30",
+          "durationMins": 180,
+          "note": "Huge complex with seven walls. Buy the rooftop ticket for the gopuram view."
+        },
+        {
+          "id": 11,
+          "name": "Jambukeswarar Temple",
+          "address": "Thiruvanaikoil, Tiruchirappalli, Tamil Nadu 620005",
+          "category": "place of worship",
+          "lat": 10.8534,
+          "lng": 78.7056,
+          "time": "10:00",
+          "durationMins": 75,
+          "note": "The water element temple. The sanctum floor has a spring that never dries."
+        },
+        {
+          "id": 12,
+          "name": "Amma Mandapam",
+          "address": "Amma Mandapam Road, Srirangam, Tiruchirappalli, Tamil Nadu 620006",
+          "category": "viewpoint",
+          "lat": 10.8571,
+          "lng": 78.6911,
+          "time": "15:30",
+          "durationMins": 45,
+          "note": "Bathing ghats on the Kaveri."
+        },
+        {
+          "id": 13,
+          "name": "Rockfort Ucchi Pillayar Temple",
+          "address": "Rockfort, Tiruchirappalli, Tamil Nadu 620002",
+          "category": "place of worship",
+          "lat": 10.8282,
+          "lng": 78.6969,
+          "time": "17:00",
+          "durationMins": 90,
+          "note": "About 400 steps cut into the rock. Time it for sunset over the river."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "date": "2026-12-17",
+      "places": [
+        {
+          "id": 14,
+          "name": "Brihadeeswarar Temple",
+          "address": "Membalam Road, Balaganapathy Nagar, Thanjavur, Tamil Nadu 613007",
+          "category": "place of worship",
+          "lat": 10.7828,
+          "lng": 79.1318,
+          "time": "07:00",
+          "durationMins": 150,
+          "note": "UNESCO site, finished in 1010 by Raja Raja Chola. The granite stone at the top weighs about 80 tonnes."
+        },
+        {
+          "id": 15,
+          "name": "Sivaganga Park",
+          "address": "Big Temple Road, Thanjavur, Tamil Nadu 613001",
+          "category": "park",
+          "lat": 10.786,
+          "lng": 79.1338,
+          "time": "10:00",
+          "durationMins": 30,
+          "note": null
+        },
+        {
+          "id": 16,
+          "name": "Thanjavur Maratha Palace",
+          "address": "East Main Street, Thanjavur, Tamil Nadu 613009",
+          "category": "museum",
+          "lat": 10.792,
+          "lng": 79.1371,
+          "time": "11:00",
+          "durationMins": 120,
+          "note": "Includes the Saraswathi Mahal Library and the Chola bronze gallery."
+        },
+        {
+          "id": 17,
+          "name": "Brihadeeswarar Temple at dusk",
+          "address": "Membalam Road, Balaganapathy Nagar, Thanjavur, Tamil Nadu 613007",
+          "category": "place of worship",
+          "lat": 10.7828,
+          "lng": 79.1318,
+          "time": "18:00",
+          "durationMins": 60,
+          "note": "Come back once the vimana is lit up."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "date": "2026-12-18",
+      "places": [
+        {
+          "id": 18,
+          "name": "Meenakshi Amman Temple",
+          "address": "Madurai Main, Madurai, Tamil Nadu 625001",
+          "category": "place of worship",
+          "lat": 9.9195,
+          "lng": 78.1193,
+          "time": "06:00",
+          "durationMins": 180,
+          "note": "No phones inside, so leave them at the counter. Enter from the east tower and don't miss the thousand pillar hall."
+        },
+        {
+          "id": 19,
+          "name": "Murugan Idli Shop",
+          "address": "West Masi Street, Madurai, Tamil Nadu 625001",
+          "category": "restaurant",
+          "lat": 9.9193,
+          "lng": 78.1145,
+          "time": "09:15",
+          "durationMins": 45,
+          "note": "Soft idlis with four chutneys."
+        },
+        {
+          "id": 20,
+          "name": "Koodal Azhagar Temple",
+          "address": "Koodal Azhagar Temple Street, Madurai, Tamil Nadu 625001",
+          "category": "place of worship",
+          "lat": 9.9146,
+          "lng": 78.1134,
+          "time": "10:15",
+          "durationMins": 60,
+          "note": null
+        },
+        {
+          "id": 22,
+          "name": "Gandhi Memorial Museum",
+          "address": "Tamukkam, Madurai, Tamil Nadu 625020",
+          "category": "museum",
+          "lat": 9.9306,
+          "lng": 78.1394,
+          "time": "11:45",
+          "durationMins": 75,
+          "note": "Has the blood-stained dhoti Gandhi wore on 30 January 1948."
+        },
+        {
+          "id": 21,
+          "name": "Thirumalai Nayakkar Mahal",
+          "address": "Palace Road, Mahal Area, Madurai, Tamil Nadu 625001",
+          "category": "museum",
+          "lat": 9.9149,
+          "lng": 78.124,
+          "time": "15:00",
+          "durationMins": 90,
+          "note": "Check the timing for the evening sound and light show."
+        }
+      ]
+    }
+  ]
+}
