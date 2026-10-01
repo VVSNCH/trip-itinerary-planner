@@ -1,40 +1,55 @@
 import { useState } from 'react'
 import { DndProvider } from 'react-dnd'
-import { COPY, LABELS } from '@/constants'
-import { Sheet } from '@/components/common'
+import { COPY, LABELS, MAP, MESSAGES } from '@/constants'
+import { ListIcon, MapIcon, Sheet, ToggleGroup } from '@/components/common'
+import { ErrorBoundary, Notice } from '@/components/feedback'
+import StopCard from '@/features/map/components/StopCard'
+import TripMap from '@/features/map/components/TripMap'
 import SearchPanel from '@/features/places/components/SearchPanel'
 import { useMinWidth } from '@/hooks/useMinWidth'
 import type { Trip } from '@/types'
 import { formatShortDay } from '@/utils/dates'
 import { dndBackend, dndOptions } from '../../dnd/backend'
-import { usePlannerParams } from '../../hooks/usePlannerParams'
+import { usePlannerParams, type PlannerView as View } from '../../hooks/usePlannerParams'
 import { DayStrip } from '../DayStrip/DayStrip'
 import { ItineraryPanel } from '../ItineraryPanel/ItineraryPanel'
 import { PlannerHeader } from '../PlannerHeader/PlannerHeader'
-import { Body, MapArea, Page, Sidebar } from './PlannerView.styles'
+import {
+  Body,
+  BottomBar,
+  MapArea,
+  MapFallback,
+  Page,
+  Sidebar,
+} from './PlannerView.styles'
 
 export const PlannerView = ({ trip }: { trip: Trip }) => {
   const {
     day,
     selectedPlaceId,
     isSearchOpen,
+    view,
     selectDay,
     selectPlace,
     openSearch,
     closeSearch,
+    setView,
   } = usePlannerParams(trip)
   const isDesktop = useMinWidth('md')
   const [hoverDayId, setHoverDayId] = useState<number | null>(null)
 
   const dayNumber = day ? trip.days.indexOf(day) + 1 : 0
   const showInlineSearch = isDesktop && isSearchOpen && day
+  // On a phone the list and the map take turns; on a wide screen both show.
+  const showList = isDesktop || view === 'list'
+  const showMap = isDesktop || view === 'map'
 
   return (
     <DndProvider backend={dndBackend} options={dndOptions}>
-      <Page>
+      <Page $isMapOnly={!showList}>
         <PlannerHeader trip={trip} view="planner" onAddPlace={openSearch} />
-        <Body>
-          <Sidebar>
+        <Body $isMapOnly={!showList}>
+          <Sidebar $isMapOnly={!showList}>
             {showInlineSearch ? (
               <SearchPanel trip={trip} dayId={day.id} onClose={closeSearch} />
             ) : (
@@ -46,7 +61,7 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
                   onSelectDay={selectDay}
                   onHoverDay={setHoverDayId}
                 />
-                {day && (
+                {day && showList && (
                   <ItineraryPanel
                     trip={trip}
                     day={day}
@@ -60,8 +75,47 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
               </>
             )}
           </Sidebar>
-          <MapArea aria-hidden="true" />
+          {showMap && day && (
+            <MapArea>
+              <ErrorBoundary
+                fallback={(reset) => (
+                  <MapFallback>
+                    <Notice message={MESSAGES.MAP_FAILED} onAction={reset} />
+                  </MapFallback>
+                )}
+              >
+                <TripMap
+                  dayId={day.id}
+                  places={day.places}
+                  selectedPlaceId={selectedPlaceId}
+                  onSelectPlace={selectPlace}
+                  bottomInset={isDesktop ? 0 : MAP.PHONE_BOTTOM_INSET}
+                />
+              </ErrorBoundary>
+            </MapArea>
+          )}
         </Body>
+
+        {!isDesktop && (
+          <BottomBar $hasCard={view === 'map' && Boolean(day)}>
+            <ToggleGroup<View>
+              label={LABELS.VIEW}
+              value={view}
+              onChange={setView}
+              options={[
+                { value: 'list', label: LABELS.LIST, icon: <ListIcon /> },
+                { value: 'map', label: LABELS.MAP, icon: <MapIcon /> },
+              ]}
+            />
+            {view === 'map' && day && (
+              <StopCard
+                places={day.places}
+                selectedPlaceId={selectedPlaceId}
+                onSelectPlace={selectPlace}
+              />
+            )}
+          </BottomBar>
+        )}
 
         {!isDesktop && day && (
           <Sheet
