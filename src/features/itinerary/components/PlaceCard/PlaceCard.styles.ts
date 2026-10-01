@@ -1,13 +1,20 @@
 import styled, { css } from 'styled-components'
 
-export const Row = styled.div`
+// While dragging, the card stays in the list as an empty placeholder of the same size.
+export const Row = styled.div<{ $isPlaceholder: boolean }>`
+  visibility: ${({ $isPlaceholder }) => ($isPlaceholder ? 'hidden' : 'visible')};
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(3)};
 `
 
+// Above the stretched select button, so pressing the handle starts a drag.
 export const Handle = styled.span`
+  position: relative;
+  z-index: 1;
   display: inline-flex;
+  cursor: grab;
+  touch-action: none;
   color: ${({ theme }) => theme.colors.textMuted};
 
   & svg {

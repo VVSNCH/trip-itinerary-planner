@@ -44,6 +44,15 @@ describe('summarizeDay', () => {
     expect(summarizeDay(day)).toBe('4 places · 5h planned · 09:30 – 16:00')
   })
 
+  it('spans earliest start to latest finish when stops are out of time order', () => {
+    const day = [
+      place({ time: '14:00', durationMins: 120 }),
+      place({ time: '09:30', durationMins: 90 }),
+      place({ time: '12:15', durationMins: 60 }),
+    ]
+    expect(summarizeDay(day)).toBe('3 places · 4h 30m planned · 09:30 – 16:00')
+  })
+
   it('leaves out what is not known yet', () => {
     expect(summarizeDay([place({})])).toBe('1 place')
     expect(summarizeDay([])).toBe('0 places')
