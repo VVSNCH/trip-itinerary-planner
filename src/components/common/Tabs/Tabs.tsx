@@ -2,13 +2,15 @@ import MuiTab from '@mui/material/Tab'
 import MuiTabs from '@mui/material/Tabs'
 import type { ReactElement, SyntheticEvent } from 'react'
 import { tokens } from '@/theme'
-import { TileLabel, TileSublabel } from './Tabs.styles'
+import { TileBadge, TileLabel, TileSublabel } from './Tabs.styles'
 
 export interface TabItem<T extends string | number> {
   value: T
   label: string
   sublabel?: string
   icon?: ReactElement
+  badge?: string
+  highlighted?: boolean
 }
 
 export interface TabsProps<T extends string | number> {
@@ -33,6 +35,8 @@ const underlineTab = {
 }
 
 const tileTab = {
+  position: 'relative',
+  overflow: 'visible',
   flexDirection: 'column',
   alignItems: 'flex-start',
   minWidth: sizes.tileMinWidth,
@@ -50,6 +54,10 @@ const tileTab = {
     color: colors.textOnPrimary,
   },
   '&.Mui-focusVisible': { boxShadow: `0 0 0 ${sizes.focusRing} ${colors.focusRing}` },
+  '&[data-highlighted="true"]': {
+    borderColor: colors.accent,
+    boxShadow: `0 0 0 ${sizes.focusRing} ${colors.accentBorder}`,
+  },
 }
 
 export const Tabs = <T extends string | number>({
@@ -76,6 +84,7 @@ export const Tabs = <T extends string | number>({
               minHeight: 'auto',
               '& .MuiTabs-indicator': { display: 'none' },
               '& .MuiTabs-flexContainer': { gap: space(2) },
+              '& .MuiTabs-scroller': { padding: space(1.5, 0) },
             }
           : {
               minHeight: sizes.controlLg,
@@ -91,11 +100,13 @@ export const Tabs = <T extends string | number>({
           iconPosition="start"
           disableRipple
           sx={isTiles ? tileTab : underlineTab}
+          data-highlighted={item.highlighted ? 'true' : undefined}
           label={
             isTiles ? (
               <>
                 <TileLabel>{item.label}</TileLabel>
                 {item.sublabel && <TileSublabel>{item.sublabel}</TileSublabel>}
+                {item.badge && <TileBadge>{item.badge}</TileBadge>}
               </>
             ) : (
               item.label

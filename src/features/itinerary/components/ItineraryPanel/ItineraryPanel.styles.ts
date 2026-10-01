@@ -21,3 +21,9 @@ export const Connector = styled.div`
   border-left: ${({ theme }) => theme.sizes.border} dashed
     ${({ theme }) => theme.colors.borderStrong};
 `
+
+export const Status = styled.p`
+  min-height: ${({ theme }) => theme.textStyles.caption.lineHeight}em;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: ${({ theme }) => theme.textStyles.caption.fontSize};
+`

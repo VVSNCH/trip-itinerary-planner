@@ -230,3 +230,63 @@ describe('REMOVE_PLACE', () => {
     expect(next?.days.flatMap((day) => day.places)).toHaveLength(4)
   })
 })
+
+describe('MOVE_PLACE', () => {
+  const twoDays = (): Trip => {
+    const trip = lisbon()
+    const [first, second, ...rest] = trip.days
+    if (!first || !second) throw new Error('fixture needs two days')
+    return {
+      ...trip,
+      days: [
+        { ...first, places: [place(1, 'A'), place(2, 'B'), place(3, 'C')] },
+        { ...second, places: [place(4, 'D')] },
+        ...rest.map((day) => ({ ...day, places: [] })),
+      ],
+    }
+  }
+
+  const move = (
+    trip: Trip,
+    fromDayId: number,
+    toDayId: number,
+    fromIndex: number,
+    toIndex: number
+  ) =>
+    tripReducer(
+      { trips: [trip] },
+      {
+        type: 'MOVE_PLACE',
+        payload: { tripId: trip.id, fromDayId, toDayId, fromIndex, toIndex, now: LATER },
+      }
+    ).trips[0]
+
+  const names = (trip: Trip | undefined, dayIndex: number) =>
+    trip?.days[dayIndex]?.places.map((p) => p.name)
+
+  it('reorders within a day, forwards and backwards', () => {
+    expect(names(move(twoDays(), 1, 1, 0, 2), 0)).toEqual(['B', 'C', 'A'])
+    expect(names(move(twoDays(), 1, 1, 2, 0), 0)).toEqual(['C', 'A', 'B'])
+  })
+
+  it('moves a place to another day at the given index', () => {
+    const next = move(twoDays(), 1, 2, 1, 0)
+    expect(names(next, 0)).toEqual(['A', 'C'])
+    expect(names(next, 1)).toEqual(['B', 'D'])
+  })
+
+  it('appends when moving onto an empty day', () => {
+    const next = move(twoDays(), 1, 3, 0, 0)
+    expect(names(next, 0)).toEqual(['B', 'C'])
+    expect(names(next, 2)).toEqual(['A'])
+  })
+
+  it('clamps an index past the end', () => {
+    expect(names(move(twoDays(), 2, 1, 0, 99), 0)).toEqual(['A', 'B', 'C', 'D'])
+  })
+
+  it('ignores a move from an index that does not exist', () => {
+    const trip = twoDays()
+    expect(move(trip, 1, 2, 7, 0)?.days).toEqual(trip.days)
+  })
+})

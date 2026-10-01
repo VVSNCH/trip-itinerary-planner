@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type KeyboardEventHandler } from 'react'
 import { LABELS } from '@/constants'
 import {
   Card,
@@ -33,6 +33,11 @@ export interface PlaceCardProps {
   onEditTime: () => void
   onSaveNote: (note: string | null) => void
   onRemove: () => void
+  isDragging?: boolean
+  handleRef?: (node: HTMLSpanElement | null) => void
+  cardRef?: (node: HTMLDivElement | null) => void
+  onKeyDown?: KeyboardEventHandler<HTMLButtonElement>
+  describedBy?: string
 }
 
 export const PlaceCard = ({
@@ -43,6 +48,11 @@ export const PlaceCard = ({
   onEditTime,
   onSaveNote,
   onRemove,
+  isDragging = false,
+  handleRef,
+  cardRef,
+  onKeyDown,
+  describedBy,
 }: PlaceCardProps) => {
   const [isEditingNote, setIsEditingNote] = useState(false)
   const timing = formatPlaceTiming(place)
@@ -53,14 +63,25 @@ export const PlaceCard = ({
   }
 
   return (
-    <Card padding="sm" selected={isSelected}>
-      <Row>
-        <Handle aria-hidden="true">
+    <Card
+      ref={cardRef}
+      padding="sm"
+      selected={isSelected || isDragging}
+      dashed={isDragging}
+    >
+      <Row $isPlaceholder={isDragging}>
+        <Handle ref={handleRef} aria-hidden="true">
           <DragHandleIcon />
         </Handle>
         <StopBadge number={stopNumber} highlighted={isSelected} />
         <Content>
-          <SelectButton type="button" aria-pressed={isSelected} onClick={onSelect}>
+          <SelectButton
+            type="button"
+            aria-pressed={isSelected}
+            aria-describedby={describedBy}
+            onClick={onSelect}
+            onKeyDown={onKeyDown}
+          >
             {place.name}
           </SelectButton>
           <Text tone="secondary" truncate>

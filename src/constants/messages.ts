@@ -10,6 +10,9 @@ export const MESSAGES = {
   SHARE_INVALID: 'This share link is incomplete or damaged.',
   DAY_EMPTY: 'Search for a place, or drag one here from another day.',
   NOTE_HINT: 'Shows on shared links too',
+  CANCEL_DRAG_HINT: 'Press Esc to cancel.',
+  MOVE_HINT:
+    'To move a place, hold Ctrl and press the arrow keys: up and down reorder the day, left and right move it to the previous or next day.',
   DURATION_INVALID: 'Use whole minutes, up to 24 hours',
   GENERIC_ERROR: 'Something went wrong. Try again.',
 } as const
@@ -82,6 +85,12 @@ export const COPY = {
     `Add ${placeName} to Day ${dayNumber}`,
   addPlaceToDay: (dayNumber: number) => `Add a place to Day ${dayNumber}`,
   nothingPlanned: (dayNumber: number) => `Nothing planned for Day ${dayNumber}`,
+  movingToStop: (name: string, from: number, to: number) =>
+    `Moving ${name} from stop ${from} to stop ${to}.`,
+  movingToDay: (name: string, fromDay: number, toDay: number) =>
+    `Moving ${name} from Day ${fromDay} to Day ${toDay}.`,
+  movedToStop: (name: string, stop: number) => `${name} moved to stop ${stop}.`,
+  movedToDay: (name: string, dayNumber: number) => `${name} moved to Day ${dayNumber}.`,
   onDay: (dayNumber: number) => `On Day ${dayNumber}`,
   searchTooShort: (minLength: number) => `Type at least ${minLength} characters.`,
   searchNoMatch: (query: string) => `No places match “${query}”`,
