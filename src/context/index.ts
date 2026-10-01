@@ -5,8 +5,9 @@ export {
   createTrip,
   deleteTrip,
   importTrip,
+  movePlace,
   removePlace,
   updatePlace,
   updateTrip,
 } from './actions'
-export type { PlaceChanges, TripAction, TripDraft, TripInput } from './actions'
+export type { PlaceChanges, PlaceMove, TripAction, TripDraft, TripInput } from './actions'

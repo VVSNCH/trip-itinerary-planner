@@ -1,5 +1,12 @@
 import type { Place, PlaceCandidate, Trip } from '@/types'
 
+export interface PlaceMove {
+  fromDayId: number
+  toDayId: number
+  fromIndex: number
+  toIndex: number
+}
+
 export type PlaceChanges = Partial<Pick<Place, 'time' | 'durationMins' | 'note'>>
 
 export type TripDraft = Pick<Trip, 'name' | 'startDate' | 'endDate' | 'days'>
@@ -27,6 +34,7 @@ export type TripAction =
       payload: { tripId: number; placeId: number; changes: PlaceChanges; now: string }
     }
   | { type: 'REMOVE_PLACE'; payload: { tripId: number; placeId: number; now: string } }
+  | { type: 'MOVE_PLACE'; payload: PlaceMove & { tripId: number; now: string } }
 
 const now = () => new Date().toISOString()
 
@@ -71,4 +79,9 @@ export const updatePlace = (
 export const removePlace = (tripId: number, placeId: number): TripAction => ({
   type: 'REMOVE_PLACE',
   payload: { tripId, placeId, now: now() },
+})
+
+export const movePlace = (tripId: number, move: PlaceMove): TripAction => ({
+  type: 'MOVE_PLACE',
+  payload: { ...move, tripId, now: now() },
 })

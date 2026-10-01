@@ -109,6 +109,27 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
       )
     }
 
+    case 'MOVE_PLACE': {
+      const { tripId, fromDayId, toDayId, fromIndex, toIndex, now } = action.payload
+      return updateDays(state, tripId, now, (days) => {
+        const moving = days.find((day) => day.id === fromDayId)?.places[fromIndex]
+        if (!moving || !days.some((day) => day.id === toDayId)) return days
+
+        // Within one day and across days are the same operation: take it out, put it in.
+        const withoutMoving = days.map((day) =>
+          day.id === fromDayId
+            ? { ...day, places: day.places.filter((_, index) => index !== fromIndex) }
+            : day
+        )
+        return withoutMoving.map((day) => {
+          if (day.id !== toDayId) return day
+          const places = [...day.places]
+          places.splice(Math.min(Math.max(toIndex, 0), places.length), 0, moving)
+          return { ...day, places }
+        })
+      })
+    }
+
     case 'DELETE_TRIP':
       return { trips: state.trips.filter((trip) => trip.id !== action.payload.tripId) }
   }
