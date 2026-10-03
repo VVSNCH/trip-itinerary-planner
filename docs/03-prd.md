@@ -68,8 +68,14 @@ result addable in one tap. Closes on selection so the user returns to the
 itinerary immediately.
 
 ### S-4 Timeline
-All days in one view, each a column or row with its places summarised. Used to
-rebalance a trip. Selecting a day returns to S-2 with that day active.
+The whole trip on one vertical line: each day as a node, its stops beneath it at
+their times, and a dashed stretch between days showing how far the next day
+starts from the last stop of the one before. Used to see the shape of the trip
+at a glance and to jump into a day.
+
+Progress shows on the same line. Stops can be ticked off as visited, past days
+read as completed, today is marked, stops whose time has passed fade back, and a
+"Now" marker sits at the current time.
 
 ### S-5 Shared view
 Read-only planner. Same layout, no drag handles, no add or delete controls. A

@@ -39,7 +39,7 @@ These are decided and not open for revisit during implementation.
 | Component library | MUI, used strictly — no hand-rolled equivalents of MUI primitives |
 | Styling | styled-components for all custom styling; MUI stays on its default Emotion engine |
 | Drag and drop | react-dnd with the HTML5 and Touch backends |
-| Map | Leaflet with OpenStreetMap tiles |
+| Map | Leaflet with OpenStreetMap data (OpenFreeMap vector tiles, OSM raster tiles as a fallback) |
 | Place search | Nominatim |
 | Routing lines | OSRM public API |
 | Persistence | Browser localStorage |
@@ -86,9 +86,13 @@ both so colours and spacing never drift apart.
 - FR-4.6 A failed route request falls back to straight lines between points.
 
 ### FR-5 Timeline view
-- FR-5.1 A timeline shows all days of the trip side by side.
+- FR-5.1 A timeline shows all days of the trip in order on one vertical line,
+  with the distance from each day's last stop to the next day's first.
 - FR-5.2 Each day shows its place count and a total estimated duration.
 - FR-5.3 Selecting a day from the timeline makes it active.
+- FR-5.4 A place can be marked as visited from the planner or the timeline.
+- FR-5.5 The timeline shows progress by the clock: past days as completed,
+  today marked, and a marker at the current time.
 
 ### FR-6 Sharing
 - FR-6.1 The user can generate a read-only link for a trip.
@@ -121,6 +125,9 @@ both so colours and spacing never drift apart.
 - NFR-3.2 The map does not re-render the whole layer set on every list change.
 - NFR-3.3 Route requests are cancelled when superseded.
 - NFR-3.4 Production bundle target under 400KB gzipped excluding map tiles.
+  As built, the first screen loads under 200KB and the map, which needs the
+  MapLibre renderer for its vector style, adds about 270KB only when it is
+  first shown. The overrun was accepted in exchange for a readable map.
 
 ### NFR-4 Code quality
 - NFR-4.1 No magic values in components; all constants come from a constants module.
