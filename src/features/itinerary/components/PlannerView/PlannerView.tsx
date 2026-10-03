@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { DndProvider } from 'react-dnd'
 import { COPY, LABELS, MAP, MESSAGES } from '@/constants'
-import { ListIcon, MapIcon, Sheet, ToggleGroup } from '@/components/common'
+import { ListIcon, MapIcon, Sheet, Skeleton, ToggleGroup } from '@/components/common'
 import { ErrorBoundary, Notice } from '@/components/feedback'
 import StopCard from '@/features/map/components/StopCard'
-import TripMap from '@/features/map/components/TripMap'
 import SearchPanel from '@/features/places/components/SearchPanel'
 import ShareDialog from '@/features/share/components/ShareDialog'
 import { useMinWidth } from '@/hooks/useMinWidth'
@@ -20,18 +19,26 @@ import {
   BottomBar,
   MapArea,
   MapFallback,
+  MapLoading,
   Page,
   Sidebar,
 } from './PlannerView.styles'
 
+// Leaflet is the biggest dependency, so the map downloads only once it is shown.
+const TripMap = lazy(() => import('@/features/map/components/TripMap'))
+
+const searchFallback = <Notice tone="offline" message={MESSAGES.SEARCH_FAILED} />
+
 export interface PlannerViewProps {
   trip: Trip
+  banner?: ReactNode
   readOnly?: boolean
   onViewChange?: (view: PlannerHeaderView) => void
 }
 
 export const PlannerView = ({
   trip,
+  banner,
   readOnly = false,
   onViewChange,
 }: PlannerViewProps) => {
@@ -47,19 +54,22 @@ export const PlannerView = ({
     setView,
   } = usePlannerParams(trip)
   const isDesktop = useMinWidth('md')
+  // From tablet width up there is room for the list and the map together.
+  const isWide = useMinWidth('sm')
   const [hoverDayId, setHoverDayId] = useState<number | null>(null)
   const [isSharing, setIsSharing] = useState(false)
 
   const dayNumber = day ? trip.days.indexOf(day) + 1 : 0
   const canSearch = !readOnly && isSearchOpen && day
   const showInlineSearch = isDesktop && canSearch
-  // On a phone the list and the map take turns; on a wide screen both show.
-  const showList = isDesktop || view === 'list'
-  const showMap = isDesktop || view === 'map'
+  // On a phone the list and the map take turns; on a wider screen both show.
+  const showList = isWide || view === 'list'
+  const showMap = isWide || view === 'map'
 
   return (
     <DndProvider backend={dndBackend} options={dndOptions}>
       <Page $isMapOnly={!showList}>
+        {banner}
         <PlannerHeader
           trip={trip}
           view="planner"
@@ -70,7 +80,9 @@ export const PlannerView = ({
         <Body $isMapOnly={!showList}>
           <Sidebar $isMapOnly={!showList}>
             {showInlineSearch ? (
-              <SearchPanel trip={trip} dayId={day.id} onClose={closeSearch} />
+              <ErrorBoundary fallback={() => searchFallback}>
+                <SearchPanel trip={trip} dayId={day.id} onClose={closeSearch} />
+              </ErrorBoundary>
             ) : (
               <>
                 <DayStrip
@@ -104,19 +116,27 @@ export const PlannerView = ({
                   </MapFallback>
                 )}
               >
-                <TripMap
-                  dayId={day.id}
-                  places={day.places}
-                  selectedPlaceId={selectedPlaceId}
-                  onSelectPlace={selectPlace}
-                  bottomInset={isDesktop ? 0 : MAP.PHONE_BOTTOM_INSET}
-                />
+                <Suspense
+                  fallback={
+                    <MapLoading>
+                      <Skeleton shape="block" height="100%" />
+                    </MapLoading>
+                  }
+                >
+                  <TripMap
+                    dayId={day.id}
+                    places={day.places}
+                    selectedPlaceId={selectedPlaceId}
+                    onSelectPlace={selectPlace}
+                    bottomInset={isWide ? 0 : MAP.PHONE_BOTTOM_INSET}
+                  />
+                </Suspense>
               </ErrorBoundary>
             </MapArea>
           )}
         </Body>
 
-        {!isDesktop && (
+        {!isWide && (
           <BottomBar $hasCard={view === 'map' && Boolean(day)}>
             <ToggleGroup<View>
               label={LABELS.VIEW}
@@ -144,7 +164,9 @@ export const PlannerView = ({
             title={LABELS.SEARCH_PLACES}
             overline={COPY.addingTo(dayNumber, formatShortDay(day.date))}
           >
-            <SearchPanel trip={trip} dayId={day.id} withHeader={false} />
+            <ErrorBoundary fallback={() => searchFallback}>
+              <SearchPanel trip={trip} dayId={day.id} withHeader={false} />
+            </ErrorBoundary>
           </Sheet>
         )}
         {isSharing && <ShareDialog trip={trip} onClose={() => setIsSharing(false)} />}

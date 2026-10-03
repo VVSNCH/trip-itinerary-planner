@@ -69,3 +69,31 @@ it('rejects a response it cannot read', async () => {
     RequestError
   )
 })
+
+it('joins a stop that sits off the road to the route', async () => {
+  const temple = { lat: 12.8475, lng: 79.6997 }
+  const shrine = { lat: 12.8402, lng: 79.7036 }
+  stubFetch({
+    code: 'Ok',
+    routes: [
+      {
+        geometry: {
+          coordinates: [
+            [79.7005, 12.8478],
+            [79.702, 12.844],
+            [79.7036, 12.8402],
+          ],
+        },
+      },
+    ],
+    waypoints: [{ location: [79.7005, 12.8478] }, { location: [79.7036, 12.8402] }],
+  })
+
+  expect(await getRoute(toRouteKey([temple, shrine]))).toEqual([
+    { lat: 12.8478, lng: 79.7005 },
+    temple,
+    { lat: 12.8478, lng: 79.7005 },
+    { lat: 12.844, lng: 79.702 },
+    shrine,
+  ])
+})

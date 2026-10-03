@@ -36,26 +36,27 @@ export const SharedTripView = ({ draft }: { draft: TripDraft }) => {
     navigate({ search: `${PARAMS.DAY}=${dayId}`, hash })
   }
 
-  return (
+  // Inside the planner the banner counts toward its one-screen height.
+  const banner = (
+    <Banner role="note" aria-label={LABELS.SHARED_ITINERARY}>
+      <ViewIcon />
+      <BannerText>
+        <Text variant="bodyStrong">{LABELS.SHARED_ITINERARY}</Text>
+        <Text tone="secondary">{MESSAGES.SHARED_BANNER}</Text>
+      </BannerText>
+      <Button size="sm" startIcon={<CopyIcon />} onClick={handleSave}>
+        {LABELS.SAVE_COPY}
+      </Button>
+    </Banner>
+  )
+
+  return view === 'planner' ? (
+    <PlannerView trip={trip} banner={banner} readOnly onViewChange={setView} />
+  ) : (
     <>
-      <Banner role="note" aria-label={LABELS.SHARED_ITINERARY}>
-        <ViewIcon />
-        <BannerText>
-          <Text variant="bodyStrong">{LABELS.SHARED_ITINERARY}</Text>
-          <Text tone="secondary">{MESSAGES.SHARED_BANNER}</Text>
-        </BannerText>
-        <Button size="sm" startIcon={<CopyIcon />} onClick={handleSave}>
-          {LABELS.SAVE_COPY}
-        </Button>
-      </Banner>
-      {view === 'planner' ? (
-        <PlannerView trip={trip} readOnly onViewChange={setView} />
-      ) : (
-        <>
-          <PlannerHeader trip={trip} view="timeline" onViewChange={setView} />
-          <TimelineView trip={trip} onOpenDay={handleOpenDay} />
-        </>
-      )}
+      {banner}
+      <PlannerHeader trip={trip} view="timeline" onViewChange={setView} />
+      <TimelineView trip={trip} onOpenDay={handleOpenDay} />
     </>
   )
 }

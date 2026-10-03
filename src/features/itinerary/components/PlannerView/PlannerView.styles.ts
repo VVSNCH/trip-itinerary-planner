@@ -17,8 +17,13 @@ export const Page = styled.div<LayoutProps>`
   flex-direction: column;
   min-height: 100dvh;
   ${({ $isMapOnly }) => $isMapOnly && oneScreen}
+
+  ${up('md')} {
+    height: 100dvh;
+  }
 `
 
+// Phone: list or map. Tablet: list above a fixed-height map. Desktop: side by side.
 export const Body = styled.div<LayoutProps>`
   display: flex;
   flex: 1;
@@ -28,7 +33,6 @@ export const Body = styled.div<LayoutProps>`
   ${up('md')} {
     display: grid;
     grid-template-columns: ${({ theme }) => theme.sizes.sidePanelWidth} minmax(0, 1fr);
-    height: calc(100dvh - ${({ theme }) => theme.sizes.headerHeight});
   }
 `
 
@@ -40,6 +44,10 @@ export const Sidebar = styled.div<LayoutProps>`
   padding: ${({ theme }) => theme.space(4)};
   padding-bottom: ${({ theme, $isMapOnly }) => ($isMapOnly ? theme.space(2) : theme.space(24))};
   background: ${({ theme }) => theme.colors.background};
+
+  ${up('sm')} {
+    padding-bottom: ${({ theme }) => theme.space(6)};
+  }
 
   ${up('md')} {
     padding-bottom: ${({ theme }) => theme.space(4)};
@@ -54,10 +62,25 @@ export const MapArea = styled.div`
   flex: 1;
   min-height: 0;
   background: ${({ theme }) => theme.colors.map.land};
+
+  ${up('sm')} {
+    flex: none;
+    height: ${({ theme }) => theme.sizes.tabletMapHeight};
+  }
+
+  ${up('md')} {
+    height: auto;
+  }
 `
 
 export const MapFallback = styled.div`
   padding: ${({ theme }) => theme.space(4)};
+`
+
+export const MapLoading = styled.div`
+  position: absolute;
+  inset: 0;
+  display: grid;
 `
 
 // The phone's floating List/Map switch, with the stop card under it in map view.
