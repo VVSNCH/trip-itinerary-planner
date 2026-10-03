@@ -1,7 +1,7 @@
 import { EMPTY_STATES } from '@/constants'
 import { StatusPage } from '@/components/layout'
+import TripTimeline from '@/features/timeline/components/TripTimeline'
 import { useTrip } from '@/features/trips/hooks/useTrip'
-import { summarizeTrip } from '@/features/trips/utils/summary'
 
 export const TimelinePage = () => {
   const trip = useTrip()
@@ -15,5 +15,5 @@ export const TimelinePage = () => {
     )
   }
 
-  return <StatusPage title={trip.name} description={summarizeTrip(trip)} />
+  return <TripTimeline trip={trip} />
 }

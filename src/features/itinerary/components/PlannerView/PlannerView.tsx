@@ -6,6 +6,7 @@ import { ErrorBoundary, Notice } from '@/components/feedback'
 import StopCard from '@/features/map/components/StopCard'
 import TripMap from '@/features/map/components/TripMap'
 import SearchPanel from '@/features/places/components/SearchPanel'
+import ShareDialog from '@/features/share/components/ShareDialog'
 import { useMinWidth } from '@/hooks/useMinWidth'
 import type { Trip } from '@/types'
 import { formatShortDay } from '@/utils/dates'
@@ -13,7 +14,7 @@ import { dndBackend, dndOptions } from '../../dnd/backend'
 import { usePlannerParams, type PlannerView as View } from '../../hooks/usePlannerParams'
 import { DayStrip } from '../DayStrip/DayStrip'
 import { ItineraryPanel } from '../ItineraryPanel/ItineraryPanel'
-import { PlannerHeader } from '../PlannerHeader/PlannerHeader'
+import { PlannerHeader, type PlannerHeaderView } from '../PlannerHeader/PlannerHeader'
 import {
   Body,
   BottomBar,
@@ -23,7 +24,17 @@ import {
   Sidebar,
 } from './PlannerView.styles'
 
-export const PlannerView = ({ trip }: { trip: Trip }) => {
+export interface PlannerViewProps {
+  trip: Trip
+  readOnly?: boolean
+  onViewChange?: (view: PlannerHeaderView) => void
+}
+
+export const PlannerView = ({
+  trip,
+  readOnly = false,
+  onViewChange,
+}: PlannerViewProps) => {
   const {
     day,
     selectedPlaceId,
@@ -37,9 +48,11 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
   } = usePlannerParams(trip)
   const isDesktop = useMinWidth('md')
   const [hoverDayId, setHoverDayId] = useState<number | null>(null)
+  const [isSharing, setIsSharing] = useState(false)
 
   const dayNumber = day ? trip.days.indexOf(day) + 1 : 0
-  const showInlineSearch = isDesktop && isSearchOpen && day
+  const canSearch = !readOnly && isSearchOpen && day
+  const showInlineSearch = isDesktop && canSearch
   // On a phone the list and the map take turns; on a wide screen both show.
   const showList = isDesktop || view === 'list'
   const showMap = isDesktop || view === 'map'
@@ -47,7 +60,13 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
   return (
     <DndProvider backend={dndBackend} options={dndOptions}>
       <Page $isMapOnly={!showList}>
-        <PlannerHeader trip={trip} view="planner" onAddPlace={openSearch} />
+        <PlannerHeader
+          trip={trip}
+          view="planner"
+          onAddPlace={readOnly ? undefined : openSearch}
+          onShare={readOnly ? undefined : () => setIsSharing(true)}
+          onViewChange={onViewChange}
+        />
         <Body $isMapOnly={!showList}>
           <Sidebar $isMapOnly={!showList}>
             {showInlineSearch ? (
@@ -70,6 +89,7 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
                     hoverDayId={hoverDayId}
                     onSelectPlace={selectPlace}
                     onAddPlace={openSearch}
+                    readOnly={readOnly}
                   />
                 )}
               </>
@@ -117,7 +137,7 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
           </BottomBar>
         )}
 
-        {!isDesktop && day && (
+        {!isDesktop && !readOnly && day && (
           <Sheet
             open={isSearchOpen}
             onClose={closeSearch}
@@ -127,6 +147,7 @@ export const PlannerView = ({ trip }: { trip: Trip }) => {
             <SearchPanel trip={trip} dayId={day.id} withHeader={false} />
           </Sheet>
         )}
+        {isSharing && <ShareDialog trip={trip} onClose={() => setIsSharing(false)} />}
       </Page>
     </DndProvider>
   )

@@ -6,6 +6,7 @@ import {
   DeleteIcon,
   EditIcon,
   Menu,
+  ShareIcon,
   Text,
 } from '@/components/common'
 import type { Trip } from '@/types'
@@ -27,6 +28,7 @@ export interface TripCardProps {
   isPast: boolean
   onRename: () => void
   onChangeDates: () => void
+  onShare: () => void
   onDelete: () => void
 }
 
@@ -35,6 +37,7 @@ export const TripCard = ({
   isPast,
   onRename,
   onChangeDates,
+  onShare,
   onDelete,
 }: TripCardProps) => {
   const placeCount = trip.days.reduce((count, day) => count + day.places.length, 0)
@@ -62,6 +65,12 @@ export const TripCard = ({
                   label: LABELS.CHANGE_DATES,
                   icon: <CalendarIcon />,
                   onSelect: onChangeDates,
+                },
+                {
+                  id: 'share',
+                  label: LABELS.SHARE,
+                  icon: <ShareIcon />,
+                  onSelect: onShare,
                 },
                 {
                   id: 'delete',

@@ -24,6 +24,7 @@ import { plural } from '@/utils/format'
 import { daysRemovedByRedate } from '../../utils/days'
 import { buildSampleTrip } from '../../utils/sampleTrip'
 import { isPastTrip, sortTrips } from '../../utils/sortTrips'
+import ShareDialog from '@/features/share/components/ShareDialog'
 import { ShrinkTripDialog } from '../ShrinkTripDialog/ShrinkTripDialog'
 import { TripCard } from '../TripCard/TripCard'
 import { TripFormDialog } from '../TripFormDialog/TripFormDialog'
@@ -35,6 +36,7 @@ type OpenDialog =
   | { kind: 'dates'; trip: Trip }
   | { kind: 'shrink'; trip: Trip; changes: TripInput; removedDays: Day[] }
   | { kind: 'delete'; trip: Trip }
+  | { kind: 'share'; trip: Trip }
   | null
 
 export const TripsHome = () => {
@@ -125,6 +127,7 @@ export const TripsHome = () => {
                 isPast={isPastTrip(trip, today)}
                 onRename={() => setDialog({ kind: 'rename', trip })}
                 onChangeDates={() => setDialog({ kind: 'dates', trip })}
+                onShare={() => setDialog({ kind: 'share', trip })}
                 onDelete={() => setDialog({ kind: 'delete', trip })}
               />
             ))}
@@ -180,6 +183,8 @@ export const TripsHome = () => {
           onCancel={close}
         />
       )}
+
+      {dialog?.kind === 'share' && <ShareDialog trip={dialog.trip} onClose={close} />}
 
       {dialog?.kind === 'delete' && (
         <ConfirmDialog
