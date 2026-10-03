@@ -30,4 +30,6 @@ export const countDays = (startISO: string, endISO: string) =>
 
 export const formatShortDay = (iso: string) => format(parseISO(iso), 'EEE d')
 
+export const formatClock = (date: Date) => format(date, 'HH:mm')
+
 export const formatLongDay = (iso: string) => format(parseISO(iso), 'EEEE d MMMM')

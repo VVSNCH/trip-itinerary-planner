@@ -1,4 +1,4 @@
-import { useId, useState } from 'react'
+import { useId, useRef, useState } from 'react'
 import { useDragLayer, useDrop } from 'react-dnd'
 import { COPY, DND_TYPES, LABELS, MESSAGES } from '@/constants'
 import { AddIcon, Button, SearchIcon, Text, VisuallyHidden } from '@/components/common'
@@ -13,12 +13,13 @@ import {
 import type { Day, Place, Trip } from '@/types'
 import { isTouchDevice } from '../../dnd/backend'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
-import { describeWalk } from '../../utils/walking'
+import { useListFlip } from '../../hooks/useListFlip'
+import { describeTransfer, describeWalk } from '../../utils/walking'
 import { DayHeader } from '../DayHeader/DayHeader'
 import { PlaceCard } from '../PlaceCard/PlaceCard'
 import { PlaceTimeDialog } from '../PlaceTimeDialog/PlaceTimeDialog'
 import { SortablePlace } from '../SortablePlace/SortablePlace'
-import { Connector, List, Panel, Status } from './ItineraryPanel.styles'
+import { Connector, Item, List, Panel, Status, Transfer } from './ItineraryPanel.styles'
 
 export interface ItineraryPanelProps {
   trip: Trip
@@ -48,6 +49,8 @@ export const ItineraryPanel = ({
   // The order shown while dragging; the reducer only hears about it on drop.
   const [dragOrder, setDragOrder] = useState<Place[] | null>(null)
   const places = dragOrder ?? day.places
+  const listRef = useRef<HTMLOListElement>(null)
+  useListFlip(listRef, places.map((place) => place.id).join())
 
   const dragged = useDragLayer((monitor) =>
     monitor.isDragging() ? monitor.getItem<PlaceDragItem>() : null
@@ -117,6 +120,16 @@ export const ItineraryPanel = ({
     setTimingPlace(null)
   }
 
+  // The nearest earlier day with places, since a rest day in between has no last stop.
+  const previousDayIndex = trip.days
+    .slice(0, dayNumber - 1)
+    .reduce(
+      (found, candidate, index) => (candidate.places.length > 0 ? index : found),
+      -1
+    )
+  const previousStop = trip.days[previousDayIndex]?.places.at(-1)
+  const firstStop = places[0]
+
   const hoverDayIndex = trip.days.findIndex((candidate) => candidate.id === hoverDayId)
   const dragStatus = !dragged
     ? null
@@ -155,7 +168,17 @@ export const ItineraryPanel = ({
         />
       ) : (
         <>
-          <List>
+          {previousStop && firstStop && (
+            <Transfer>
+              <Text variant="caption" tone="secondary">
+                {COPY.fromPreviousDay(previousStop.name, previousDayIndex + 1)}
+              </Text>
+              <Text variant="caption" tone="secondary">
+                {describeTransfer(previousStop, firstStop)}
+              </Text>
+            </Transfer>
+          )}
+          <List ref={listRef}>
             {places.map((place, index) => {
               const previous = places[index - 1]
               const isSelected = place.id === selectedPlaceId
@@ -170,7 +193,7 @@ export const ItineraryPanel = ({
 
               if (readOnly) {
                 return (
-                  <li key={place.id}>
+                  <Item key={place.id} $order={index} data-flip-key={place.id}>
                     {connector}
                     <PlaceCard
                       place={place}
@@ -180,9 +203,10 @@ export const ItineraryPanel = ({
                       onEditTime={() => {}}
                       onSaveNote={() => {}}
                       onRemove={() => {}}
+                      onToggleVisited={() => {}}
                       readOnly
                     />
-                  </li>
+                  </Item>
                 )
               }
 
@@ -203,6 +227,9 @@ export const ItineraryPanel = ({
                   onEditTime={() => setTimingPlace(place)}
                   onSaveNote={(note) => handleUpdate(place.id, { note })}
                   onRemove={() => handleRemove(place.id)}
+                  onToggleVisited={() =>
+                    handleUpdate(place.id, { visited: !place.visited })
+                  }
                 />
               )
             })}

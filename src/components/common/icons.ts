@@ -21,5 +21,6 @@ export { default as WarningIcon } from '@mui/icons-material/WarningAmberOutlined
 export { default as OfflineIcon } from '@mui/icons-material/WifiOffOutlined'
 export { default as ListIcon } from '@mui/icons-material/FormatListBulleted'
 export { default as MapIcon } from '@mui/icons-material/MapOutlined'
-export { default as TimelineIcon } from '@mui/icons-material/ViewWeekOutlined'
+export { default as TimelineIcon } from '@mui/icons-material/ViewTimelineOutlined'
+export { default as TravelIcon } from '@mui/icons-material/CommuteOutlined'
 export { default as PlaceIcon } from '@mui/icons-material/Place'

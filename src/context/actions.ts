@@ -7,7 +7,9 @@ export interface PlaceMove {
   toIndex: number
 }
 
-export type PlaceChanges = Partial<Pick<Place, 'time' | 'durationMins' | 'note'>>
+export type PlaceChanges = Partial<
+  Pick<Place, 'time' | 'durationMins' | 'note' | 'visited'>
+>
 
 export type TripDraft = Pick<Trip, 'name' | 'startDate' | 'endDate' | 'days'>
 

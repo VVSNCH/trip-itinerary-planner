@@ -1,4 +1,4 @@
-import { WALK_METERS_PER_MINUTE } from '@/constants'
+import { COPY, MAX_WALK_METERS, WALK_METERS_PER_MINUTE } from '@/constants'
 import type { Coordinates } from '@/types'
 
 const EARTH_RADIUS_M = 6_371_000
@@ -27,3 +27,11 @@ export const walkMinutes = (from: Coordinates, to: Coordinates) =>
 // "4 min walk · 300 m"
 export const describeWalk = (from: Coordinates, to: Coordinates) =>
   `${walkMinutes(from, to)} min walk · ${formatDistance(distanceMeters(from, to))}`
+
+// Days often start in a different town, so a long gap gets a distance, not a walk time.
+export const describeTransfer = (from: Coordinates, to: Coordinates) => {
+  const meters = distanceMeters(from, to)
+  return meters > MAX_WALK_METERS
+    ? COPY.planTransport(formatDistance(meters))
+    : describeWalk(from, to)
+}
