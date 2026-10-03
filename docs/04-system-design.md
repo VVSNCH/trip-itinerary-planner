@@ -21,7 +21,7 @@ the logic, and talks directly to three public read-only services.
                                  │
               ┌──────────────────┼──────────────────┐
               ▼                  ▼                  ▼
-        Nominatim            OSRM              OSM tiles
+        Nominatim            OSRM          OpenFreeMap
       (place search)    (route geometry)     (map imagery)
 ```
 
@@ -49,6 +49,7 @@ interface Place {
   time: string | null          // HH:mm
   note: string | null
   durationMins: number | null
+  visited?: boolean            // optional, so older saved and shared trips load
 }
 
 interface Day {
@@ -139,7 +140,7 @@ react-dnd separates three roles: what is dragged, what accepts it, and what
 happens on drop. Two drag types exist:
 
 - `PLACE` — a place card, draggable within a day and across days
-- `DAY` — a day column in the timeline, reserved for v2
+- `DAY` — a whole day on the timeline, reserved for v2
 
 Drop targets:
 - A place card, which reorders by index
@@ -166,6 +167,12 @@ places, the selected place, and the route geometry.
   and only then. Requests are debounced and superseded ones aborted.
 - Bounds fitting runs when the active day changes, not on every place change,
   so adding a place does not yank the viewport away from the user.
+- OSRM starts each leg on the nearest walkable road. A stop inside a temple
+  compound or a park is joined to the route by a short spur, so the line always
+  reaches the marker.
+- The base map is a vector style drawn by MapLibre as a layer beneath Leaflet.
+  Markers, the route and controls stay plain Leaflet. Without WebGL the layer
+  falls back to OSM raster tiles.
 
 Failure path: OSRM unavailable means a straight polyline between points, with a
 quiet note in the UI. The feature degrades, the app does not.
@@ -175,7 +182,7 @@ quiet note in the UI. The feature degrades, the app does not.
 A share link carries the trip in the URL fragment:
 
 ```
-/shared#<base64url(deflate(JSON(trip)))>
+/s#v1.<base64url(deflate(JSON(trip)))>
 ```
 
 The fragment, not the query string, because a fragment is never sent to the
@@ -189,16 +196,16 @@ be truncated by some clients rather than producing a link that silently fails.
 ## 7. External services
 
 All three are part of the OpenStreetMap ecosystem — community-maintained,
-free, and read from the same underlying map database. OSM tiles are the map
-imagery, Nominatim searches OSM data by name, OSRM computes routes over OSM
-roads. Free means donated infrastructure, which is why each has a defined
-failure path rather than an assumption of availability.
+free, and read from the same underlying map database. OpenFreeMap serves the
+map imagery as vector tiles, Nominatim searches OSM data by name, OSRM computes
+routes over OSM roads. Free means donated infrastructure, which is why each has
+a defined failure path rather than an assumption of availability.
 
 | Service | Used for | Failure mode | Mitigation |
 |---|---|---|---|
 | Nominatim | Place search | Rate limit, 429 | Debounce at 500ms, cache results per query, show a clear message |
 | OSRM (FOSSGIS walking server) | Route geometry | Timeout, 5xx | Straight-line fallback, request cancellation, cache per stop list |
-| OSM tiles | Map imagery | Slow or missing tiles | Leaflet's own tile handling, neutral background |
+| OpenFreeMap | Vector map imagery | Slow or missing tiles, no WebGL | Neutral background while loading; OSM raster tiles when WebGL is unavailable |
 
 All three are wrapped behind a service module. No component calls fetch
 directly. Swapping Nominatim for Mapbox later touches one file.
@@ -206,6 +213,8 @@ directly. Swapping Nominatim for Mapbox later touches one file.
 ## 8. Rendering and performance
 
 - The map subtree is memoised against itinerary list re-renders.
+- The planner and the map are separate chunks, loaded when first needed, so the
+  first screen does not pay for drag and drop or the map renderer.
 - Place lists are plain arrays; virtualisation is unnecessary below a few
   hundred items and is not included.
 - Route responses are cached by the hash of the ordered coordinate list, so

@@ -12,7 +12,7 @@ Version 0.1 · Draft for review
 | Components | MUI |
 | Custom styling | styled-components |
 | Drag and drop | react-dnd, HTML5Backend and TouchBackend |
-| Map | Leaflet via react-leaflet |
+| Map | Leaflet via react-leaflet, with a MapLibre vector base layer |
 | Dates | date-fns |
 | Compression | fflate |
 | Lint and format | ESLint with typescript-eslint, Prettier |
@@ -24,30 +24,30 @@ Nothing else is installed without a reason recorded in the README.
 
 ```
 trip-itinerary-planner/
-├── docs/
-├── public/
+├── docs/                              these documents, plus README screenshots
+├── public/                            favicon
 ├── src/
 │   ├── main.tsx
 │   ├── App.tsx
 │   ├── routes/
-│   │   ├── index.tsx                  route table
+│   │   ├── index.tsx                  route table, lazy pages, error element
 │   │   ├── TripsPage/
 │   │   ├── PlannerPage/
 │   │   ├── TimelinePage/
 │   │   ├── SharedTripPage/
+│   │   ├── RouteErrorPage/
 │   │   └── NotFoundPage/
 │   ├── features/
-│   │   ├── trips/
+│   │   ├── trips/                     home, trip cards, create and date dialogs
+│   │   ├── places/                    search panel
+│   │   ├── itinerary/                 planner, day list, place cards
 │   │   │   ├── components/
+│   │   │   ├── dnd/                   drag source, drop target, keyboard moves
 │   │   │   ├── hooks/
-│   │   │   └── utils/
-│   │   ├── itinerary/
-│   │   │   ├── components/
-│   │   │   ├── hooks/
-│   │   │   └── dnd/
-│   │   ├── places/
-│   │   ├── map/
-│   │   └── share/
+│   │   │   └── utils/                 timing, walking, progress
+│   │   ├── map/                       base map, markers, route, stop card
+│   │   ├── timeline/                  the whole-trip timeline
+│   │   └── share/                     share dialog, shared view, link codec
 │   ├── components/
 │   │   ├── common/                    the only UI building blocks, see 3.2
 │   │   ├── layout/
@@ -59,7 +59,7 @@ trip-itinerary-planner/
 │   │   ├── usePersistTrips.ts
 │   │   ├── tripReducer.ts
 │   │   └── actions.ts
-│   ├── hooks/
+│   ├── hooks/                         useMinWidth, useNow
 │   ├── services/
 │   │   ├── storage.ts
 │   │   ├── nominatim.ts
@@ -73,6 +73,8 @@ trip-itinerary-planner/
 │   │   ├── api.ts
 │   │   ├── breakpoints.ts
 │   │   ├── motion.ts
+│   │   ├── itinerary.ts               walking pace, busy-day mark, share limits
+│   │   ├── map.ts                     zoom levels, padding, marker size
 │   │   └── messages.ts
 │   ├── types/
 │   │   ├── trip.ts                    domain model
@@ -86,16 +88,19 @@ trip-itinerary-planner/
 │   │   ├── radii.ts                   corner radii
 │   │   ├── shadows.ts                 elevation
 │   │   ├── zIndex.ts                  stacking order
+│   │   ├── sizes.ts                   fixed sizes: controls, badges, panels
+│   │   ├── media.ts                   up() and down() breakpoint helpers
+│   │   ├── animations.ts              entrance and marker keyframes
 │   │   ├── tokens.ts                  aggregates the files above
 │   │   ├── theme.ts
 │   │   ├── GlobalStyles.tsx
 │   │   └── ThemeProviders.tsx
-│   └── utils/
-│       ├── nextId.ts
-│       └── ...
+│   ├── mocks/                         the sample trip
+│   └── utils/                         dates, formatting, ids, type guards
 ├── .env.example
 ├── .eslintrc.cjs
 ├── .prettierrc
+├── netlify.toml
 ├── tsconfig.json
 ├── vite.config.ts
 └── README.md
@@ -185,26 +190,26 @@ not pass MUI's full props through.
 | `IconButton` | MUI IconButton | Icon-only actions; an accessible label is required |
 | `Text` | MUI Typography | All text, by named variant from `typography.ts` |
 | `TextField` | MUI TextField | Trip name, place note, time |
-| `SearchField` | MUI TextField | Debounced place search input with clear action |
-| `DateRangeField` | MUI TextField ×2 | Trip start and end dates |
-| `Card` | MUI Card | Trip cards, place cards, timeline day columns |
+| `DateRangePicker` | MUI TextField ×2 | Trip start and end dates |
+| `Card` | MUI Card | Trip cards, place cards |
 | `Chip` | MUI Chip | Category, place count, duration labels |
 | `Dialog` | MUI Dialog | Create trip, share link |
 | `ConfirmDialog` | `Dialog` | Delete trip, discard orphaned days |
-| `Sheet` | MUI Drawer | Search panel (side on desktop, full-height on mobile) |
+| `Sheet` | MUI Drawer | Search panel on phones and tablets |
 | `Menu` | MUI Menu | Trip and place overflow actions |
 | `Tooltip` | MUI Tooltip | Hints on icon buttons |
 | `ToggleGroup` | MUI ToggleButtonGroup | Mobile map / list switch |
-| `Tabs` | MUI Tabs | Day selector strip |
+| `Tabs` | MUI Tabs | Day selector strip, planner and timeline switch |
 | `Toast` | MUI Snackbar | Non-blocking notices (copied link, route fallback) |
 | `Skeleton` | MUI Skeleton | Loading placeholders |
-| `StopBadge` | — | Numbered stop marker on place cards |
-| `ProgressBar` | MUI LinearProgress | Planned time per day on the timeline |
+| `StopBadge` | — | Numbered stop, or a tick once visited, on cards and the timeline |
+| `FloatingButton` | MUI Fab | New trip on phones |
+| `VisuallyHidden` | — | Text for screen readers only, such as drag hints |
 | `icons` | MUI icons | The only icon set; features import icons from here |
 
 The existing sibling folders keep their roles and follow the same rules:
 - `components/feedback/`: `EmptyState`, `Notice` (inline error, offline and warning messages), `ErrorBoundary`
-- `components/layout/`: `AppLayout`, `Header`, `PageContainer`, `SplitView`
+- `components/layout/`: `AppLayout` (header and page container), `StatusPage` (not found and error pages), `PageSkeleton` (shown while a page loads)
 
 This list is the starting set, not a ceiling. When a screen needs something
 that isn't here, it is added to `components/common/` first and then used. It
@@ -296,12 +301,13 @@ closing the tab cannot lose the last edit.
 
 ## 6. Environment configuration
 
-Four values live in `.env`, read once in `constants/api.ts` and never touched
+Five values live in `.env`, read once in `constants/api.ts` and never touched
 elsewhere:
 
 ```
 VITE_NOMINATIM_URL
 VITE_OSRM_URL
+VITE_MAP_STYLE_URL
 VITE_TILE_URL
 VITE_APP_CONTACT
 ```
@@ -327,13 +333,13 @@ which is what forces the fallbacks to exist.
 
 ```js
 // services/http.ts
-export const request = (url, { timeout = API.TIMEOUT_MS, signal } = {}) => ...
+export const requestJson = (url, { signal, timeoutMs = REQUEST_TIMEOUT_MS } = {}) => ...
 ```
 
-Every outbound call goes through `request`, which applies a timeout, a
+Every outbound call goes through `requestJson`, which applies a timeout, a
 user-agent-appropriate header, and JSON parsing, and converts non-2xx into a
 typed error. `nominatim.ts` and `osrm.ts` sit on top and expose domain
-functions — `searchPlaces(query, signal)`, `getRoute(coordinates, signal)` —
+functions — `searchPlaces(query, viewbox, signal)`, `getRoute(routeKey, signal)` —
 returning already-shaped domain objects, never raw provider payloads.
 
 Provider response shapes do not leak past this layer. That is what makes
@@ -377,8 +383,9 @@ its own listener.
 - `components/feedback/ErrorBoundary.tsx` is generic and takes a fallback.
 - Three instances: around the map, around the search panel, around the route
   outlet.
-- Service errors are typed: `NetworkError`, `RateLimitError`, `TimeoutError`.
-  The UI maps type to message from `constants/messages.ts`.
+- Service errors are one `RequestError` class with a `kind`: `offline`,
+  `rate-limited`, `timeout` or `failed`. The UI maps each kind to a message
+  from `constants/messages.ts`.
 - No `console.log` in the codebase. ESLint enforces it.
 
 ## 11. Testing
@@ -388,7 +395,10 @@ Not comprehensive, targeted at logic that will break silently:
 - `tripReducer` — every action, especially `MOVE_PLACE` across days
 - share encode and decode round-trip, including malformed input
 - storage read of corrupt and older-version data
-- one integration test: drag a place to a new index and assert list order
+- OSRM response parsing, caching, and joining off-road stops to the route
+- day progress rules and the walking versus "plan transport" threshold
+- one integration test: move a place with the keyboard through the real
+  itinerary panel and assert the list order and the announcement
 
 UI appearance is not tested. Snapshot tests of markup are not written.
 
