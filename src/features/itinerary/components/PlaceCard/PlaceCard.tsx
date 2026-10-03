@@ -38,6 +38,7 @@ export interface PlaceCardProps {
   cardRef?: (node: HTMLDivElement | null) => void
   onKeyDown?: KeyboardEventHandler<HTMLButtonElement>
   describedBy?: string
+  readOnly?: boolean
 }
 
 export const PlaceCard = ({
@@ -53,6 +54,7 @@ export const PlaceCard = ({
   cardRef,
   onKeyDown,
   describedBy,
+  readOnly = false,
 }: PlaceCardProps) => {
   const [isEditingNote, setIsEditingNote] = useState(false)
   const timing = formatPlaceTiming(place)
@@ -70,9 +72,11 @@ export const PlaceCard = ({
       dashed={isDragging}
     >
       <Row $isPlaceholder={isDragging}>
-        <Handle ref={handleRef} aria-hidden="true">
-          <DragHandleIcon />
-        </Handle>
+        {!readOnly && (
+          <Handle ref={handleRef} aria-hidden="true">
+            <DragHandleIcon />
+          </Handle>
+        )}
         <StopBadge number={stopNumber} highlighted={isSelected} />
         <Content>
           <SelectButton
@@ -92,7 +96,13 @@ export const PlaceCard = ({
             {place.category && <Text variant="overline">{place.category}</Text>}
           </Meta>
           <Above>
-            {isEditingNote ? (
+            {readOnly ? (
+              place.note && (
+                <Text variant="caption" tone="secondary">
+                  {place.note}
+                </Text>
+              )
+            ) : isEditingNote ? (
               <NoteEditor
                 initial={place.note}
                 onSave={handleSaveNote}
@@ -112,33 +122,35 @@ export const PlaceCard = ({
             )}
           </Above>
         </Content>
-        <Above>
-          <Menu
-            label={LABELS.PLACE_ACTIONS}
-            items={[
-              {
-                id: 'time',
-                label: LABELS.EDIT_TIME,
-                icon: <ClockIcon />,
-                onSelect: onEditTime,
-              },
-              {
-                id: 'note',
-                label: place.note ? LABELS.EDIT_NOTE : LABELS.ADD_NOTE,
-                icon: <EditIcon />,
-                onSelect: () => setIsEditingNote(true),
-              },
-              {
-                id: 'remove',
-                label: LABELS.REMOVE,
-                icon: <DeleteIcon />,
-                tone: 'danger',
-                dividerBefore: true,
-                onSelect: onRemove,
-              },
-            ]}
-          />
-        </Above>
+        {!readOnly && (
+          <Above>
+            <Menu
+              label={LABELS.PLACE_ACTIONS}
+              items={[
+                {
+                  id: 'time',
+                  label: LABELS.EDIT_TIME,
+                  icon: <ClockIcon />,
+                  onSelect: onEditTime,
+                },
+                {
+                  id: 'note',
+                  label: place.note ? LABELS.EDIT_NOTE : LABELS.ADD_NOTE,
+                  icon: <EditIcon />,
+                  onSelect: () => setIsEditingNote(true),
+                },
+                {
+                  id: 'remove',
+                  label: LABELS.REMOVE,
+                  icon: <DeleteIcon />,
+                  tone: 'danger',
+                  dividerBefore: true,
+                  onSelect: onRemove,
+                },
+              ]}
+            />
+          </Above>
+        )}
       </Row>
     </Card>
   )

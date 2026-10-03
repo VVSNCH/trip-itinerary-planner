@@ -27,6 +27,8 @@ export const sizes = {
   thumbnailHeight: '176px',
 
   sidePanelWidth: '420px',
+  timelineColumn: '300px',
+  timeColumn: '44px',
   menuMinWidth: '200px',
   tileMinWidth: '72px',
   emptyStateMaxWidth: '420px',

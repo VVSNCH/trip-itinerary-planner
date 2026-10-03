@@ -6,6 +6,7 @@ import {
   Button,
   IconButton,
   ListIcon,
+  ShareIcon,
   Tabs,
   Text,
   TimelineIcon,
@@ -13,22 +14,34 @@ import {
 import type { Trip } from '@/types'
 import { formatRange } from '@/utils/dates'
 import { plural } from '@/utils/format'
-import { Actions, Bar, Nav, TitleBlock } from './PlannerHeader.styles'
+import { Actions, Bar, MobileShare, Nav, TitleBlock } from './PlannerHeader.styles'
 
-type View = 'planner' | 'timeline'
+export type PlannerHeaderView = 'planner' | 'timeline'
 
 export interface PlannerHeaderProps {
   trip: Trip
-  view: View
+  view: PlannerHeaderView
   onAddPlace?: () => void
+  onShare?: () => void
+  onViewChange?: (view: PlannerHeaderView) => void
 }
 
-export const PlannerHeader = ({ trip, view, onAddPlace }: PlannerHeaderProps) => {
+export const PlannerHeader = ({
+  trip,
+  view,
+  onAddPlace,
+  onShare,
+  onViewChange,
+}: PlannerHeaderProps) => {
   const navigate = useNavigate()
   const placeCount = trip.days.reduce((count, day) => count + day.places.length, 0)
 
-  const handleViewChange = (next: View) =>
-    navigate(next === 'planner' ? buildPlannerPath(trip.id) : buildTimelinePath(trip.id))
+  const handleViewChange = (next: PlannerHeaderView) =>
+    onViewChange
+      ? onViewChange(next)
+      : navigate(
+          next === 'planner' ? buildPlannerPath(trip.id) : buildTimelinePath(trip.id)
+        )
 
   return (
     <Bar>
@@ -54,12 +67,26 @@ export const PlannerHeader = ({ trip, view, onAddPlace }: PlannerHeaderProps) =>
           ]}
         />
       </Nav>
-      {onAddPlace && (
+      {(onShare || onAddPlace) && (
         <Actions>
-          <Button startIcon={<AddIcon />} onClick={onAddPlace}>
-            {LABELS.ADD_PLACE}
-          </Button>
+          {onShare && (
+            <Button variant="secondary" startIcon={<ShareIcon />} onClick={onShare}>
+              {LABELS.SHARE}
+            </Button>
+          )}
+          {onAddPlace && (
+            <Button startIcon={<AddIcon />} onClick={onAddPlace}>
+              {LABELS.ADD_PLACE}
+            </Button>
+          )}
         </Actions>
+      )}
+      {onShare && (
+        <MobileShare>
+          <IconButton label={LABELS.SHARE} onClick={onShare}>
+            <ShareIcon />
+          </IconButton>
+        </MobileShare>
       )}
     </Bar>
   )

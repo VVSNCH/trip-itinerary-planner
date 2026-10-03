@@ -8,7 +8,7 @@ import { Header, TitleBlock } from './DayHeader.styles'
 export interface DayHeaderProps {
   day: Day
   dayNumber: number
-  onAddPlace: () => void
+  onAddPlace?: () => void
 }
 
 export const DayHeader = ({ day, dayNumber, onAddPlace }: DayHeaderProps) => (
@@ -20,8 +20,10 @@ export const DayHeader = ({ day, dayNumber, onAddPlace }: DayHeaderProps) => (
       </Text>
       <Text tone="secondary">{summarizeDay(day.places)}</Text>
     </TitleBlock>
-    <Button variant="text" startIcon={<AddIcon />} onClick={onAddPlace}>
-      {LABELS.ADD}
-    </Button>
+    {onAddPlace && (
+      <Button variant="text" startIcon={<AddIcon />} onClick={onAddPlace}>
+        {LABELS.ADD}
+      </Button>
+    )}
   </Header>
 )

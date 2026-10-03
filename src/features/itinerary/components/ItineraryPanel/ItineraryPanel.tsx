@@ -15,6 +15,7 @@ import { isTouchDevice } from '../../dnd/backend'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { describeWalk } from '../../utils/walking'
 import { DayHeader } from '../DayHeader/DayHeader'
+import { PlaceCard } from '../PlaceCard/PlaceCard'
 import { PlaceTimeDialog } from '../PlaceTimeDialog/PlaceTimeDialog'
 import { SortablePlace } from '../SortablePlace/SortablePlace'
 import { Connector, List, Panel, Status } from './ItineraryPanel.styles'
@@ -27,6 +28,7 @@ export interface ItineraryPanelProps {
   hoverDayId: number | null
   onSelectPlace: (placeId: number | null) => void
   onAddPlace: () => void
+  readOnly?: boolean
 }
 
 export const ItineraryPanel = ({
@@ -37,6 +39,7 @@ export const ItineraryPanel = ({
   hoverDayId,
   onSelectPlace,
   onAddPlace,
+  readOnly = false,
 }: ItineraryPanelProps) => {
   const { dispatch } = useTrips()
   const hintId = useId()
@@ -130,18 +133,24 @@ export const ItineraryPanel = ({
         dropRef(node)
       }}
     >
-      <DayHeader day={day} dayNumber={dayNumber} onAddPlace={onAddPlace} />
-      <VisuallyHidden id={hintId}>{MESSAGES.MOVE_HINT}</VisuallyHidden>
+      <DayHeader
+        day={day}
+        dayNumber={dayNumber}
+        onAddPlace={readOnly ? undefined : onAddPlace}
+      />
+      {!readOnly && <VisuallyHidden id={hintId}>{MESSAGES.MOVE_HINT}</VisuallyHidden>}
 
       {places.length === 0 ? (
         <EmptyState
           dashed
           title={COPY.nothingPlanned(dayNumber)}
-          description={MESSAGES.DAY_EMPTY}
+          description={readOnly ? undefined : MESSAGES.DAY_EMPTY}
           action={
-            <Button variant="secondary" startIcon={<SearchIcon />} onClick={onAddPlace}>
-              {LABELS.ADD_PLACE}
-            </Button>
+            !readOnly && (
+              <Button variant="secondary" startIcon={<SearchIcon />} onClick={onAddPlace}>
+                {LABELS.ADD_PLACE}
+              </Button>
+            )
           }
         />
       ) : (
@@ -150,6 +159,33 @@ export const ItineraryPanel = ({
             {places.map((place, index) => {
               const previous = places[index - 1]
               const isSelected = place.id === selectedPlaceId
+              const connector = previous && (
+                <Connector>
+                  <Text variant="caption" tone="secondary">
+                    {describeWalk(previous, place)}
+                  </Text>
+                </Connector>
+              )
+              const select = () => onSelectPlace(isSelected ? null : place.id)
+
+              if (readOnly) {
+                return (
+                  <li key={place.id}>
+                    {connector}
+                    <PlaceCard
+                      place={place}
+                      stopNumber={index + 1}
+                      isSelected={isSelected}
+                      onSelect={select}
+                      onEditTime={() => {}}
+                      onSaveNote={() => {}}
+                      onRemove={() => {}}
+                      readOnly
+                    />
+                  </li>
+                )
+              }
+
               return (
                 <SortablePlace
                   key={place.id}
@@ -158,20 +194,12 @@ export const ItineraryPanel = ({
                   index={index}
                   isSelected={isSelected}
                   describedBy={hintId}
-                  connector={
-                    previous && (
-                      <Connector>
-                        <Text variant="caption" tone="secondary">
-                          {describeWalk(previous, place)}
-                        </Text>
-                      </Connector>
-                    )
-                  }
+                  connector={connector}
                   onHover={handleHover}
                   onDragEnd={handleDragEnd}
                   onMoveBy={(delta) => handleMoveBy(place, index, delta)}
                   onMoveToDay={(delta) => handleMoveToDay(place, index, delta)}
-                  onSelect={() => onSelectPlace(isSelected ? null : place.id)}
+                  onSelect={select}
                   onEditTime={() => setTimingPlace(place)}
                   onSaveNote={(note) => handleUpdate(place.id, { note })}
                   onRemove={() => handleRemove(place.id)}
@@ -179,9 +207,16 @@ export const ItineraryPanel = ({
               )
             })}
           </List>
-          <Button variant="dashed" fullWidth startIcon={<AddIcon />} onClick={onAddPlace}>
-            {COPY.addPlaceToDay(dayNumber)}
-          </Button>
+          {!readOnly && (
+            <Button
+              variant="dashed"
+              fullWidth
+              startIcon={<AddIcon />}
+              onClick={onAddPlace}
+            >
+              {COPY.addPlaceToDay(dayNumber)}
+            </Button>
+          )}
         </>
       )}
 

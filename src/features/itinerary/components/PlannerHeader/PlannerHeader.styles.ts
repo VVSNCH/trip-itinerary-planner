@@ -39,9 +39,16 @@ export const Nav = styled.nav`
 
 export const Actions = styled.div`
   display: none;
+  gap: ${({ theme }) => theme.space(2)};
   margin-left: ${({ theme }) => theme.space(4)};
 
   ${up('md')} {
     display: flex;
+  }
+`
+
+export const MobileShare = styled.div`
+  ${up('md')} {
+    display: none;
   }
 `

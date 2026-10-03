@@ -1,5 +1,11 @@
 import type { Place } from '@/types'
-import { formatDuration, formatPlaceTiming, summarizeDay } from './timing'
+import {
+  daySpan,
+  formatDuration,
+  formatPlaceTiming,
+  plannedMinutes,
+  summarizeDay,
+} from './timing'
 import { describeWalk } from './walking'
 
 const place = (overrides: Partial<Place>): Place => ({
@@ -70,5 +76,21 @@ describe('describeWalk', () => {
     expect(
       describeWalk({ lat: 38.6916, lng: -9.216 }, { lat: 38.6958, lng: -9.1945 })
     ).toBe('24 min walk · 1.9 km')
+  })
+})
+
+describe('daySpan and plannedMinutes', () => {
+  it('reports the span in minutes for the timeline’s hours-out chip', () => {
+    const day = [
+      place({ time: '09:00', durationMins: 30 }),
+      place({ time: '19:00', durationMins: 120 }),
+      place({ durationMins: 45 }),
+    ]
+    expect(daySpan(day)).toEqual({ label: '09:00 – 21:00', minutes: 720 })
+    expect(plannedMinutes(day)).toBe(195)
+  })
+
+  it('has no span when nothing has a time', () => {
+    expect(daySpan([place({ durationMins: 30 })])).toBeNull()
   })
 })

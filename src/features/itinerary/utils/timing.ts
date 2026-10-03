@@ -27,10 +27,11 @@ export const formatPlaceTiming = (place: Place) =>
     .filter(Boolean)
     .join(' · ')
 
-// "4 places · 5h planned · 09:30 – 16:00"
-export const summarizeDay = (places: Place[]) => {
-  const planned = places.reduce((sum, place) => sum + (place.durationMins ?? 0), 0)
-  // Earliest start to latest finish, whatever order the stops are in.
+export const plannedMinutes = (places: Place[]) =>
+  places.reduce((sum, place) => sum + (place.durationMins ?? 0), 0)
+
+// Earliest start to latest finish, whatever order the stops are in.
+export const daySpan = (places: Place[]) => {
   const timed = places.flatMap((place) =>
     place.time
       ? [
@@ -41,14 +42,19 @@ export const summarizeDay = (places: Place[]) => {
         ]
       : []
   )
-  const earliest = Math.min(...timed.map((slot) => slot.start))
-  const latest = Math.max(...timed.map((slot) => slot.end))
-  const span = timed.length > 0 ? `${toClock(earliest)} – ${toClock(latest)}` : null
+  if (timed.length === 0) return null
+  const start = Math.min(...timed.map((slot) => slot.start))
+  const end = Math.max(...timed.map((slot) => slot.end))
+  return { label: `${toClock(start)} – ${toClock(end)}`, minutes: end - start }
+}
 
+// "4 places · 5h planned · 09:30 – 16:00"
+export const summarizeDay = (places: Place[]) => {
+  const planned = plannedMinutes(places)
   return [
     plural(places.length, 'place'),
     planned > 0 ? `${formatDuration(planned)} planned` : null,
-    span,
+    daySpan(places)?.label ?? null,
   ]
     .filter(Boolean)
     .join(' · ')
