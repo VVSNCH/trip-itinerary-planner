@@ -8,6 +8,8 @@ export interface Place {
   time: string | null
   note: string | null
   durationMins: number | null
+  // Optional so trips saved, or shared, before it existed still load.
+  visited?: boolean
 }
 
 export interface Day {

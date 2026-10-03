@@ -2,6 +2,7 @@ import { useState, type KeyboardEventHandler } from 'react'
 import { LABELS } from '@/constants'
 import {
   Card,
+  CheckIcon,
   Chip,
   ClockIcon,
   DeleteIcon,
@@ -33,6 +34,7 @@ export interface PlaceCardProps {
   onEditTime: () => void
   onSaveNote: (note: string | null) => void
   onRemove: () => void
+  onToggleVisited: () => void
   isDragging?: boolean
   handleRef?: (node: HTMLSpanElement | null) => void
   cardRef?: (node: HTMLDivElement | null) => void
@@ -49,6 +51,7 @@ export const PlaceCard = ({
   onEditTime,
   onSaveNote,
   onRemove,
+  onToggleVisited,
   isDragging = false,
   handleRef,
   cardRef,
@@ -77,7 +80,7 @@ export const PlaceCard = ({
             <DragHandleIcon />
           </Handle>
         )}
-        <StopBadge number={stopNumber} highlighted={isSelected} />
+        <StopBadge number={stopNumber} highlighted={isSelected} visited={place.visited} />
         <Content>
           <SelectButton
             type="button"
@@ -138,6 +141,12 @@ export const PlaceCard = ({
                   label: place.note ? LABELS.EDIT_NOTE : LABELS.ADD_NOTE,
                   icon: <EditIcon />,
                   onSelect: () => setIsEditingNote(true),
+                },
+                {
+                  id: 'visited',
+                  label: place.visited ? LABELS.MARK_NOT_VISITED : LABELS.MARK_VISITED,
+                  icon: <CheckIcon />,
+                  onSelect: onToggleVisited,
                 },
                 {
                   id: 'remove',

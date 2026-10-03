@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { up } from '@/theme'
+import { enterAnimation, up } from '@/theme'
 
 export const Heading = styled.div`
   display: flex;
@@ -42,4 +42,10 @@ export const MobileCreate = styled.div`
   ${up('sm')} {
     display: none;
   }
+`
+
+// A grid of its own so the card still stretches to the row height.
+export const GridItem = styled.div<{ $order: number }>`
+  display: grid;
+  ${({ $order }) => enterAnimation($order)}
 `

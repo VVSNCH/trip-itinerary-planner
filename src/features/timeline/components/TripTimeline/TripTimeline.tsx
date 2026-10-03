@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PARAMS, PARAM_VALUES, buildPlannerPath } from '@/constants'
+import { updatePlace, useTrips } from '@/context'
 import PlannerHeader from '@/features/itinerary/components/PlannerHeader'
 import ShareDialog from '@/features/share/components/ShareDialog'
 import type { Trip } from '@/types'
@@ -8,6 +9,7 @@ import { TimelineView } from '../TimelineView/TimelineView'
 
 export const TripTimeline = ({ trip }: { trip: Trip }) => {
   const navigate = useNavigate()
+  const { dispatch } = useTrips()
   const [isSharing, setIsSharing] = useState(false)
   const plannerPath = buildPlannerPath(trip.id)
 
@@ -24,6 +26,9 @@ export const TripTimeline = ({ trip }: { trip: Trip }) => {
       <TimelineView
         trip={trip}
         onOpenDay={(dayId) => navigate(`${plannerPath}?${PARAMS.DAY}=${dayId}`)}
+        onToggleVisited={(place) =>
+          dispatch(updatePlace(trip.id, place.id, { visited: !place.visited }))
+        }
       />
       {isSharing && <ShareDialog trip={trip} onClose={() => setIsSharing(false)} />}
     </>

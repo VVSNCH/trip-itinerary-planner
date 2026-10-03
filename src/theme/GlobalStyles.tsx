@@ -1,5 +1,6 @@
 import { createGlobalStyle } from 'styled-components'
 import { MIN_SUPPORTED_WIDTH } from '@/constants'
+import { markerDrop } from './animations'
 
 export const GlobalStyles = createGlobalStyle`
   *,
@@ -82,6 +83,10 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: ${({ theme }) => theme.fontWeight.semibold};
     box-shadow: ${({ theme }) => theme.shadows.card};
     transition: ${({ theme }) => theme.motion.transition('box-shadow', 'FAST')};
+  }
+
+  .stop-marker.is-dropping {
+    ${markerDrop}
   }
 
   .stop-marker.is-selected {

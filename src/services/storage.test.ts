@@ -30,6 +30,23 @@ describe('loadTrips', () => {
     expect(loadTrips()).toEqual({ trips: [trip], wasReset: false })
   })
 
+  it('keeps trips saved before places could be marked visited', () => {
+    const place = {
+      id: 1,
+      name: 'Kapaleeshwarar Temple',
+      address: 'Mylapore, Chennai',
+      category: 'place of worship',
+      lat: 13.0339,
+      lng: 80.2697,
+      time: null,
+      note: null,
+      durationMins: null,
+    }
+    const older = { ...trip, days: [{ id: 1, date: '2026-10-09', places: [place] }] }
+    writeRaw(JSON.stringify([older]))
+    expect(loadTrips()).toEqual({ trips: [older], wasReset: false })
+  })
+
   it('reports a reset when the JSON is corrupt', () => {
     writeRaw('[{"id": 1, "name": "Lis')
     expect(loadTrips()).toEqual({ trips: [], wasReset: true })

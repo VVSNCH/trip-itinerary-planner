@@ -6,7 +6,7 @@ import {
   plannedMinutes,
   summarizeDay,
 } from './timing'
-import { describeWalk } from './walking'
+import { describeTransfer, describeWalk } from './walking'
 
 const place = (overrides: Partial<Place>): Place => ({
   id: 1,
@@ -92,5 +92,21 @@ describe('daySpan and plannedMinutes', () => {
 
   it('has no span when nothing has a time', () => {
     expect(daySpan([place({ durationMins: 30 })])).toBeNull()
+  })
+})
+
+describe('describeTransfer', () => {
+  const elliotsBeach = { lat: 12.9989, lng: 80.2721 }
+  const ashtalakshmi = { lat: 12.9952, lng: 80.2717 }
+  const ekambareswarar = { lat: 12.8475, lng: 79.6997 }
+
+  it('gives a walk when the next day starts nearby', () => {
+    expect(describeTransfer(elliotsBeach, ashtalakshmi)).toMatch(/min walk/)
+  })
+
+  it('gives the distance when the next day starts in another town', () => {
+    expect(describeTransfer(elliotsBeach, ekambareswarar)).toBe(
+      '64.3 km away · plan transport'
+    )
   })
 })

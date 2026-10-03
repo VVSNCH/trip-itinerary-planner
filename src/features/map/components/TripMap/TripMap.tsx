@@ -1,11 +1,12 @@
 import 'leaflet/dist/leaflet.css'
 import { memo } from 'react'
-import { MapContainer, Polyline, TileLayer, ZoomControl } from 'react-leaflet'
+import { MapContainer, Polyline, ZoomControl } from 'react-leaflet'
 import { useTheme } from 'styled-components'
 import { MAP, MESSAGES, TILES } from '@/constants'
 import { Notice } from '@/components/feedback'
 import type { Place } from '@/types'
 import { useRoute } from '../../hooks/useRoute'
+import { BaseMap } from '../BaseMap/BaseMap'
 import { MapViewport } from '../MapViewport/MapViewport'
 import { StopMarker } from '../StopMarker/StopMarker'
 import { NoticeSlot, Wrapper } from './TripMap.styles'
@@ -28,12 +29,13 @@ export const TripMap = memo(
 
     return (
       <Wrapper>
-        <MapContainer center={MAP.WORLD_CENTER} zoom={MAP.WORLD_ZOOM} zoomControl={false}>
-          <TileLayer
-            url={TILES.URL}
-            attribution={TILES.ATTRIBUTION}
-            maxZoom={TILES.MAX_ZOOM}
-          />
+        <MapContainer
+          center={MAP.WORLD_CENTER}
+          zoom={MAP.WORLD_ZOOM}
+          maxZoom={TILES.MAX_ZOOM}
+          zoomControl={false}
+        >
+          <BaseMap />
           <ZoomControl position="topright" />
           <MapViewport
             dayId={dayId}

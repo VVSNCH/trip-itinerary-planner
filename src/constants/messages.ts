@@ -56,8 +56,6 @@ export const LABELS = {
   DONE: 'Done',
   SAVE_COPY: 'Save a copy',
   SHARED_ITINERARY: 'Shared itinerary',
-  PLANNED_LEGEND: 'Planned time, of an 8h day',
-  BUSY_LEGEND: 'Over 7 hours',
   LIST: 'List',
   MAP: 'Map',
   PREVIOUS_STOP: 'Previous stop',
@@ -68,6 +66,11 @@ export const LABELS = {
   ADD_PLACE: 'Add place',
   PLACE_ACTIONS: 'Place actions',
   EDIT_TIME: 'Edit time',
+  MARK_VISITED: 'Mark as visited',
+  MARK_NOT_VISITED: 'Mark as not visited',
+  COMPLETED: 'Completed',
+  TODAY: 'Today',
+  NOW: 'Now',
   ADD_NOTE: 'Add note',
   EDIT_NOTE: 'Edit note',
   REMOVE: 'Remove',
@@ -100,6 +103,11 @@ export const COPY = {
   removedPlaces: (dayLabel: string, placeCount: string, verb: 'has' | 'have') =>
     `${dayLabel} ${verb} ${placeCount}. Shortening the trip will remove them.`,
   day: (dayNumber: number) => `Day ${dayNumber}`,
+  toggleVisited: (placeName: string, isVisited: boolean) =>
+    isVisited ? `Mark ${placeName} as not visited` : `Mark ${placeName} as visited`,
+  fromPreviousDay: (placeName: string, dayNumber: number) =>
+    `From ${placeName}, end of Day ${dayNumber}`,
+  planTransport: (distance: string) => `${distance} away · plan transport`,
   addingTo: (dayNumber: number, date: string) => `Adding to Day ${dayNumber} · ${date}`,
   addToDay: (placeName: string, dayNumber: number) =>
     `Add ${placeName} to Day ${dayNumber}`,
@@ -138,6 +146,11 @@ export const EMPTY_STATES = {
     title: 'This link can’t be opened',
     description:
       'The share link is incomplete or damaged. Ask for the link to be sent again.',
+  },
+  PAGE_ERROR: {
+    title: 'Something went wrong',
+    description:
+      'This page hit an unexpected error. Your trips are still saved in this browser.',
   },
   PAGE_NOT_FOUND: {
     title: 'Page not found',

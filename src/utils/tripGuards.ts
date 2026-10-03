@@ -21,7 +21,8 @@ export const isPlace = (value: unknown): value is Place =>
   isNumber(value.lng) &&
   isStringOrNull(value.time) &&
   isStringOrNull(value.note) &&
-  isNumberOrNull(value.durationMins)
+  isNumberOrNull(value.durationMins) &&
+  (value.visited === undefined || typeof value.visited === 'boolean')
 
 export const isDay = (value: unknown): value is Day =>
   isRecord(value) &&

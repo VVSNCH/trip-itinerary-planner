@@ -10,7 +10,7 @@ export const formatDuration = (mins: number) => {
   return rest === 0 ? `${hours}h` : `${hours}h ${rest}m`
 }
 
-const toMinutes = (time: string) => {
+export const toMinutes = (time: string) => {
   const [hours = 0, minutes = 0] = time.split(':').map(Number)
   return hours * MINUTES_PER_HOUR + minutes
 }

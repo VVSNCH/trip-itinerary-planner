@@ -24,7 +24,15 @@ export const OSRM = {
   DEBOUNCE_MS: 300,
 } as const
 
+// The map is OpenFreeMap's vector Liberty style. The plain OSM raster tiles are the
+// fallback for browsers without WebGL.
 export const TILES = {
+  STYLE_URL: readEnv(
+    env.VITE_MAP_STYLE_URL,
+    'https://tiles.openfreemap.org/styles/liberty'
+  ),
+  STYLE_ATTRIBUTION:
+    '<a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   URL: readEnv(env.VITE_TILE_URL, 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
   ATTRIBUTION: '&copy; OpenStreetMap contributors',
   MAX_ZOOM: 19,
