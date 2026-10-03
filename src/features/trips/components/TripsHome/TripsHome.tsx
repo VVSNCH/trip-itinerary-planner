@@ -28,7 +28,7 @@ import ShareDialog from '@/features/share/components/ShareDialog'
 import { ShrinkTripDialog } from '../ShrinkTripDialog/ShrinkTripDialog'
 import { TripCard } from '../TripCard/TripCard'
 import { TripFormDialog } from '../TripFormDialog/TripFormDialog'
-import { EmptyActions, Grid, Heading, MobileCreate } from './TripsHome.styles'
+import { EmptyActions, Grid, GridItem, Heading, MobileCreate } from './TripsHome.styles'
 
 type OpenDialog =
   | { kind: 'create' }
@@ -120,16 +120,17 @@ export const TripsHome = () => {
       ) : (
         <>
           <Grid>
-            {sortTrips(trips, today).map((trip) => (
-              <TripCard
-                key={trip.id}
-                trip={trip}
-                isPast={isPastTrip(trip, today)}
-                onRename={() => setDialog({ kind: 'rename', trip })}
-                onChangeDates={() => setDialog({ kind: 'dates', trip })}
-                onShare={() => setDialog({ kind: 'share', trip })}
-                onDelete={() => setDialog({ kind: 'delete', trip })}
-              />
+            {sortTrips(trips, today).map((trip, index) => (
+              <GridItem key={trip.id} $order={index}>
+                <TripCard
+                  trip={trip}
+                  isPast={isPastTrip(trip, today)}
+                  onRename={() => setDialog({ kind: 'rename', trip })}
+                  onChangeDates={() => setDialog({ kind: 'dates', trip })}
+                  onShare={() => setDialog({ kind: 'share', trip })}
+                  onDelete={() => setDialog({ kind: 'delete', trip })}
+                />
+              </GridItem>
             ))}
           </Grid>
           <MobileCreate>

@@ -5,6 +5,7 @@ import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { useKeyboardMove } from '../../dnd/useKeyboardMove'
 import { usePlaceDrag } from '../../dnd/usePlaceDrag'
 import { usePlaceDrop } from '../../dnd/usePlaceDrop'
+import { Item } from '../ItineraryPanel/ItineraryPanel.styles'
 import { PlaceCard, type PlaceCardProps } from '../PlaceCard/PlaceCard'
 
 type CardActions = Omit<
@@ -52,7 +53,7 @@ export const SortablePlace = ({
   }, [isSelected, dropRef])
 
   return (
-    <li ref={dropRef}>
+    <Item ref={dropRef} $order={index} data-flip-key={place.id}>
       {connector}
       <PlaceCard
         {...cardActions}
@@ -67,6 +68,6 @@ export const SortablePlace = ({
         }}
         onKeyDown={handleKeyDown}
       />
-    </li>
+    </Item>
   )
 }

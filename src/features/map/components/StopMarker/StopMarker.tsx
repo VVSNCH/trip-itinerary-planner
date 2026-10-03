@@ -1,7 +1,8 @@
-import { divIcon } from 'leaflet'
-import { memo, useMemo } from 'react'
+import { divIcon, type Marker as LeafletMarker } from 'leaflet'
+import { memo, useEffect, useMemo, useRef } from 'react'
 import { Marker, Tooltip } from 'react-leaflet'
 import { MAP } from '@/constants'
+import { markerDropDelay } from '@/theme'
 import type { Place } from '@/types'
 
 export interface StopMarkerProps {
@@ -15,6 +16,8 @@ const HALF = MAP.MARKER_SIZE / 2
 
 export const StopMarker = memo(
   ({ place, stopNumber, isSelected, onSelect }: StopMarkerProps) => {
+    const markerRef = useRef<LeafletMarker | null>(null)
+    const firstStopNumber = useRef(stopNumber)
     const icon = useMemo(
       () =>
         divIcon({
@@ -26,8 +29,18 @@ export const StopMarker = memo(
       [stopNumber, isSelected]
     )
 
+    // Drops in once when it first appears. Leaflet swaps the inner span whenever the
+    // icon changes, so a renumber or selection never replays it.
+    useEffect(() => {
+      const badge = markerRef.current?.getElement()?.firstElementChild
+      if (!(badge instanceof HTMLElement)) return
+      badge.style.animationDelay = markerDropDelay(firstStopNumber.current - 1)
+      badge.classList.add('is-dropping')
+    }, [])
+
     return (
       <Marker
+        ref={markerRef}
         position={[place.lat, place.lng]}
         icon={icon}
         title={place.name}
