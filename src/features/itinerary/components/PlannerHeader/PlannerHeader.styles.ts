@@ -47,7 +47,11 @@ export const Actions = styled.div`
   }
 `
 
-export const MobileShare = styled.div`
+// Phones get the planner/timeline switch and share as icons; the tabs need more room.
+export const MobileActions = styled.div`
+  display: flex;
+  flex-shrink: 0;
+
   ${up('md')} {
     display: none;
   }

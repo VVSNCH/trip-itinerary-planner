@@ -9,12 +9,17 @@ export const Row = styled.div<{ $isPlaceholder: boolean }>`
 `
 
 // Above the stretched select button, so pressing the handle starts a drag.
+// The padding grows the grab area to a finger's width without moving the icon.
 export const Handle = styled.span`
   position: relative;
   z-index: 1;
   display: inline-flex;
+  margin: -${({ theme }) => theme.space(3, 2)};
+  padding: ${({ theme }) => theme.space(3, 2)};
   cursor: grab;
   touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   color: ${({ theme }) => theme.colors.textMuted};
 
   & svg {
