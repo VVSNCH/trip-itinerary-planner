@@ -77,8 +77,6 @@ export const LABELS = {
   NOTE: 'Note',
   TIME: 'Time',
   DURATION: 'Duration (minutes)',
-  PLANNED_LEGEND: 'Planned time, of an 8h day',
-  BUSY_LEGEND: 'Over 7 hours',
 } as const
 
 export const DIALOGS = {

@@ -28,7 +28,6 @@ export const sizes = {
 
   sidePanelWidth: '420px',
   tabletMapHeight: '420px',
-  timelineColumn: '300px',
   timelineMaxWidth: '760px',
   timeColumn: '44px',
   menuMinWidth: '200px',
