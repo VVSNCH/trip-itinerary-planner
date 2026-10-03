@@ -9,9 +9,10 @@ import ShareDialog from '@/features/share/components/ShareDialog'
 import { useMinWidth } from '@/hooks/useMinWidth'
 import type { Trip } from '@/types'
 import { formatShortDay } from '@/utils/dates'
-import { dndBackend, dndOptions } from '../../dnd/backend'
+import { dndBackend, dndOptions, isTouchDevice } from '../../dnd/backend'
 import { usePlannerParams, type PlannerView as View } from '../../hooks/usePlannerParams'
 import { DayStrip } from '../DayStrip/DayStrip'
+import { DragPreview } from '../DragPreview/DragPreview'
 import { ItineraryPanel } from '../ItineraryPanel/ItineraryPanel'
 import { PlannerHeader, type PlannerHeaderView } from '../PlannerHeader/PlannerHeader'
 import {
@@ -170,6 +171,7 @@ export const PlannerView = ({
           </Sheet>
         )}
         {isSharing && <ShareDialog trip={trip} onClose={() => setIsSharing(false)} />}
+        {isTouchDevice && !readOnly && <DragPreview />}
       </Page>
     </DndProvider>
   )

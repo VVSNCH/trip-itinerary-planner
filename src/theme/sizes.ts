@@ -31,6 +31,7 @@ export const sizes = {
   timelineMaxWidth: '760px',
   timeColumn: '44px',
   menuMinWidth: '200px',
+  dragPreviewWidth: '300px',
   tileMinWidth: '72px',
   emptyStateMaxWidth: '420px',
 } as const

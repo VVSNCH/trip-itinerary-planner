@@ -14,7 +14,7 @@ import {
 import type { Trip } from '@/types'
 import { formatRange } from '@/utils/dates'
 import { plural } from '@/utils/format'
-import { Actions, Bar, MobileShare, Nav, TitleBlock } from './PlannerHeader.styles'
+import { Actions, Bar, MobileActions, Nav, TitleBlock } from './PlannerHeader.styles'
 
 export type PlannerHeaderView = 'planner' | 'timeline'
 
@@ -81,13 +81,25 @@ export const PlannerHeader = ({
           )}
         </Actions>
       )}
-      {onShare && (
-        <MobileShare>
+      <MobileActions>
+        {view === 'planner' ? (
+          <IconButton
+            label={LABELS.TIMELINE}
+            onClick={() => handleViewChange('timeline')}
+          >
+            <TimelineIcon />
+          </IconButton>
+        ) : (
+          <IconButton label={LABELS.PLANNER} onClick={() => handleViewChange('planner')}>
+            <ListIcon />
+          </IconButton>
+        )}
+        {onShare && (
           <IconButton label={LABELS.SHARE} onClick={onShare}>
             <ShareIcon />
           </IconButton>
-        </MobileShare>
-      )}
+        )}
+      </MobileActions>
     </Bar>
   )
 }
