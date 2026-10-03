@@ -9,6 +9,9 @@ import {
   DragHandleIcon,
   EditIcon,
   Menu,
+  MoveDayIcon,
+  MoveDownIcon,
+  MoveUpIcon,
   StopBadge,
   Text,
 } from '@/components/common'
@@ -35,6 +38,10 @@ export interface PlaceCardProps {
   onSaveNote: (note: string | null) => void
   onRemove: () => void
   onToggleVisited: () => void
+  // Left out when the move isn't possible, which also hides its menu item.
+  onMoveUp?: () => void
+  onMoveDown?: () => void
+  onChooseDay?: () => void
   isDragging?: boolean
   handleRef?: (node: HTMLSpanElement | null) => void
   cardRef?: (node: HTMLDivElement | null) => void
@@ -52,6 +59,9 @@ export const PlaceCard = ({
   onSaveNote,
   onRemove,
   onToggleVisited,
+  onMoveUp,
+  onMoveDown,
+  onChooseDay,
   isDragging = false,
   handleRef,
   cardRef,
@@ -61,6 +71,26 @@ export const PlaceCard = ({
 }: PlaceCardProps) => {
   const [isEditingNote, setIsEditingNote] = useState(false)
   const timing = formatPlaceTiming(place)
+  const moveItems = [
+    onMoveUp && {
+      id: 'up',
+      label: LABELS.MOVE_UP,
+      icon: <MoveUpIcon />,
+      onSelect: onMoveUp,
+    },
+    onMoveDown && {
+      id: 'down',
+      label: LABELS.MOVE_DOWN,
+      icon: <MoveDownIcon />,
+      onSelect: onMoveDown,
+    },
+    onChooseDay && {
+      id: 'day',
+      label: LABELS.MOVE_TO_DAY,
+      icon: <MoveDayIcon />,
+      onSelect: onChooseDay,
+    },
+  ].filter((item) => item !== undefined)
 
   const handleSaveNote = (note: string | null) => {
     onSaveNote(note)
@@ -142,6 +172,7 @@ export const PlaceCard = ({
                   icon: <EditIcon />,
                   onSelect: () => setIsEditingNote(true),
                 },
+                ...moveItems,
                 {
                   id: 'visited',
                   label: place.visited ? LABELS.MARK_NOT_VISITED : LABELS.MARK_VISITED,

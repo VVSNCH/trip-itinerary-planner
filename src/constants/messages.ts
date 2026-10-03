@@ -66,6 +66,9 @@ export const LABELS = {
   ADD_PLACE: 'Add place',
   PLACE_ACTIONS: 'Place actions',
   EDIT_TIME: 'Edit time',
+  MOVE_UP: 'Move up',
+  MOVE_DOWN: 'Move down',
+  MOVE_TO_DAY: 'Move to another day',
   MARK_VISITED: 'Mark as visited',
   MARK_NOT_VISITED: 'Mark as not visited',
   COMPLETED: 'Completed',
@@ -89,6 +92,7 @@ export const DIALOGS = {
   DELETE_CONFIRM: 'Delete trip',
   EDIT_TIME: 'Time and duration',
   SHARE: 'Share itinerary',
+  MOVE_TO_DAY: 'Move to another day',
 } as const
 
 export const VALIDATION = {
@@ -103,6 +107,8 @@ export const COPY = {
   removedPlaces: (dayLabel: string, placeCount: string, verb: 'has' | 'have') =>
     `${dayLabel} ${verb} ${placeCount}. Shortening the trip will remove them.`,
   day: (dayNumber: number) => `Day ${dayNumber}`,
+  dayOption: (dayNumber: number, shortDate: string, placeCount: string) =>
+    `Day ${dayNumber} · ${shortDate} · ${placeCount}`,
   toggleVisited: (placeName: string, isVisited: boolean) =>
     isVisited ? `Mark ${placeName} as not visited` : `Mark ${placeName} as visited`,
   fromPreviousDay: (placeName: string, dayNumber: number) =>

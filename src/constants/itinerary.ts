@@ -8,8 +8,14 @@ export const WALK_METERS_PER_MINUTE = 80
 // Past this, the gap from one day's last stop to the next day's first isn't a walk.
 export const MAX_WALK_METERS = 3000
 
-// Touch drags start after a short hold, so a plain swipe still scrolls the list.
-export const TOUCH_DRAG_DELAY_MS = 150
+// On touch screens a card is picked up by a long press, so a swipe still scrolls.
+// Near the top or bottom edge the page scrolls by up to STEP pixels a frame.
+export const TOUCH_DRAG = {
+  DELAY_MS: 250,
+  VIBRATE_MS: 10,
+  SCROLL_EDGE: 100,
+  SCROLL_STEP: 14,
+} as const
 
 // How often the timeline's "now" marker moves.
 export const NOW_TICK_MS = 60_000

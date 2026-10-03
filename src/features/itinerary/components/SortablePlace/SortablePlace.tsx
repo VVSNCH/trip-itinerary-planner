@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { tokens } from '@/theme'
 import type { Place } from '@/types'
+import { isTouchDevice } from '../../dnd/backend'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { useKeyboardMove } from '../../dnd/useKeyboardMove'
 import { usePlaceDrag } from '../../dnd/usePlaceDrag'
@@ -60,11 +61,13 @@ export const SortablePlace = ({
         place={place}
         stopNumber={index + 1}
         isDragging={isDragging}
+        // A mouse drags by the handle; a finger can long-press anywhere on the card.
         handleRef={(node) => {
-          dragRef(node)
+          if (!isTouchDevice) dragRef(node)
         }}
         cardRef={(node) => {
           previewRef(node)
+          if (isTouchDevice) dragRef(node)
         }}
         onKeyDown={handleKeyDown}
       />

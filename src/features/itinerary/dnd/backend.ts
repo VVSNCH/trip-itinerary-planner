@@ -1,6 +1,6 @@
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { TouchBackend } from 'react-dnd-touch-backend'
-import { TOUCH_DRAG_DELAY_MS } from '@/constants'
+import { TOUCH_DRAG } from '@/constants'
 
 export const isTouchDevice =
   typeof window !== 'undefined' &&
@@ -11,5 +11,9 @@ export const isTouchDevice =
 export const dndBackend = isTouchDevice ? TouchBackend : HTML5Backend
 
 export const dndOptions = isTouchDevice
-  ? { enableMouseEvents: true, delayTouchStart: TOUCH_DRAG_DELAY_MS }
+  ? {
+      enableMouseEvents: true,
+      delayTouchStart: TOUCH_DRAG.DELAY_MS,
+      ignoreContextMenu: true,
+    }
   : undefined

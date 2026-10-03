@@ -6,6 +6,12 @@ export const Row = styled.div<{ $isPlaceholder: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space(3)};
+
+  /* A long press picks the card up on touch screens, so it must not select text. */
+  @media (pointer: coarse) {
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
 `
 
 // Above the stretched select button, so pressing the handle starts a drag.

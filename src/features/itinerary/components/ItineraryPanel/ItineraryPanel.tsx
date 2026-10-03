@@ -16,6 +16,7 @@ import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { useListFlip } from '../../hooks/useListFlip'
 import { describeTransfer, describeWalk } from '../../utils/walking'
 import { DayHeader } from '../DayHeader/DayHeader'
+import { MoveDayDialog } from '../MoveDayDialog/MoveDayDialog'
 import { PlaceCard } from '../PlaceCard/PlaceCard'
 import { PlaceTimeDialog } from '../PlaceTimeDialog/PlaceTimeDialog'
 import { SortablePlace } from '../SortablePlace/SortablePlace'
@@ -45,6 +46,7 @@ export const ItineraryPanel = ({
   const { dispatch } = useTrips()
   const hintId = useId()
   const [timingPlace, setTimingPlace] = useState<Place | null>(null)
+  const [movingPlace, setMovingPlace] = useState<Place | null>(null)
   const [announcement, setAnnouncement] = useState('')
   // The order shown while dragging; the reducer only hears about it on drop.
   const [dragOrder, setDragOrder] = useState<Place[] | null>(null)
@@ -105,6 +107,14 @@ export const ItineraryPanel = ({
   const handleMoveToDay = (place: Place, index: number, delta: -1 | 1) => {
     const target = trip.days[dayNumber - 1 + delta]
     if (target) move(place.name, index, target, target.places.length)
+  }
+
+  const handleMoveToChosenDay = (dayId: number) => {
+    const target = trip.days.find((candidate) => candidate.id === dayId)
+    const fromIndex = movingPlace ? day.places.indexOf(movingPlace) : -1
+    if (movingPlace && target && fromIndex >= 0)
+      move(movingPlace.name, fromIndex, target, target.places.length)
+    setMovingPlace(null)
   }
 
   const handleUpdate = (placeId: number, changes: PlaceChanges) =>
@@ -224,6 +234,15 @@ export const ItineraryPanel = ({
                   onMoveBy={(delta) => handleMoveBy(place, index, delta)}
                   onMoveToDay={(delta) => handleMoveToDay(place, index, delta)}
                   onSelect={select}
+                  onMoveUp={index > 0 ? () => handleMoveBy(place, index, -1) : undefined}
+                  onMoveDown={
+                    index < day.places.length - 1
+                      ? () => handleMoveBy(place, index, 1)
+                      : undefined
+                  }
+                  onChooseDay={
+                    trip.days.length > 1 ? () => setMovingPlace(place) : undefined
+                  }
                   onEditTime={() => setTimingPlace(place)}
                   onSaveNote={(note) => handleUpdate(place.id, { note })}
                   onRemove={() => handleRemove(place.id)}
@@ -248,6 +267,16 @@ export const ItineraryPanel = ({
       )}
 
       <Status aria-live="polite">{status}</Status>
+
+      {movingPlace && (
+        <MoveDayDialog
+          place={movingPlace}
+          days={trip.days}
+          currentDayId={day.id}
+          onMove={handleMoveToChosenDay}
+          onClose={() => setMovingPlace(null)}
+        />
+      )}
 
       {timingPlace && (
         <PlaceTimeDialog
