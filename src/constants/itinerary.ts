@@ -17,6 +17,14 @@ export const TOUCH_DRAG = {
   SCROLL_STEP: 14,
 } as const
 
+// Filling in times: where a day starts by default, what a stop without a duration
+// counts as, and the step the walks are rounded up to so times stay readable.
+export const SCHEDULE = {
+  DEFAULT_START: '09:00',
+  DEFAULT_STOP_MINS: 60,
+  ROUND_TO_MINS: 5,
+} as const
+
 // How often the timeline's "now" marker moves.
 export const NOW_TICK_MS = 60_000
 

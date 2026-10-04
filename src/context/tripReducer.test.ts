@@ -218,6 +218,24 @@ describe('UPDATE_PLACE', () => {
   })
 })
 
+describe('SCHEDULE_DAY', () => {
+  it('sets the given times on one day and leaves the rest alone', () => {
+    const trip = lisbon()
+    const dayId = trip.days[1]?.id ?? 0
+    const next = tripReducer(
+      { trips: [trip] },
+      {
+        type: 'SCHEDULE_DAY',
+        payload: { tripId: trip.id, dayId, times: { 2: '09:30' }, now: LATER },
+      }
+    ).trips[0]
+
+    expect(next?.days[1]?.places[0]?.time).toBe('09:30')
+    expect(next?.days[0]).toEqual(trip.days[0])
+    expect(next?.updatedAt).toBe(LATER)
+  })
+})
+
 describe('REMOVE_PLACE', () => {
   it('removes the place from whichever day holds it', () => {
     const trip = lisbon()

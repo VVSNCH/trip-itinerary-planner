@@ -7,6 +7,7 @@ export {
   importTrip,
   movePlace,
   removePlace,
+  scheduleDay,
   updatePlace,
   updateTrip,
 } from './actions'

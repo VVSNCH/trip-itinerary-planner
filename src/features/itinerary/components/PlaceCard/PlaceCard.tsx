@@ -12,10 +12,13 @@ import {
   MoveDayIcon,
   MoveDownIcon,
   MoveUpIcon,
+  OpenInNewIcon,
   StopBadge,
   Text,
+  WarningIcon,
 } from '@/components/common'
 import type { Place } from '@/types'
+import { placeUrl } from '../../utils/directions'
 import { formatPlaceTiming } from '../../utils/timing'
 import { NoteEditor } from '../NoteEditor/NoteEditor'
 import {
@@ -27,6 +30,7 @@ import {
   NoteButton,
   Row,
   SelectButton,
+  Warning,
 } from './PlaceCard.styles'
 
 export interface PlaceCardProps {
@@ -42,6 +46,7 @@ export interface PlaceCardProps {
   onMoveUp?: () => void
   onMoveDown?: () => void
   onChooseDay?: () => void
+  warning?: string
   isDragging?: boolean
   handleRef?: (node: HTMLSpanElement | null) => void
   cardRef?: (node: HTMLDivElement | null) => void
@@ -62,6 +67,7 @@ export const PlaceCard = ({
   onMoveUp,
   onMoveDown,
   onChooseDay,
+  warning,
   isDragging = false,
   handleRef,
   cardRef,
@@ -128,6 +134,14 @@ export const PlaceCard = ({
             {timing && <Chip tone="outline" icon={<ClockIcon />} label={timing} />}
             {place.category && <Text variant="overline">{place.category}</Text>}
           </Meta>
+          {warning && (
+            <Warning>
+              <WarningIcon />
+              <Text variant="caption" tone="danger">
+                {warning}
+              </Text>
+            </Warning>
+          )}
           <Above>
             {readOnly ? (
               place.note && (
@@ -178,6 +192,13 @@ export const PlaceCard = ({
                   label: place.visited ? LABELS.MARK_NOT_VISITED : LABELS.MARK_VISITED,
                   icon: <CheckIcon />,
                   onSelect: onToggleVisited,
+                },
+                {
+                  id: 'maps',
+                  label: LABELS.OPEN_IN_MAPS,
+                  icon: <OpenInNewIcon />,
+                  onSelect: () =>
+                    window.open(placeUrl(place), '_blank', 'noopener,noreferrer'),
                 },
                 {
                   id: 'remove',

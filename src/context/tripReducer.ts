@@ -99,6 +99,23 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
       )
     }
 
+    case 'SCHEDULE_DAY': {
+      const { tripId, dayId, times, now } = action.payload
+      return updateDays(state, tripId, now, (days) =>
+        days.map((day) =>
+          day.id === dayId
+            ? {
+                ...day,
+                places: day.places.map((place) => ({
+                  ...place,
+                  time: times[place.id] ?? place.time,
+                })),
+              }
+            : day
+        )
+      )
+    }
+
     case 'REMOVE_PLACE': {
       const { tripId, placeId, now } = action.payload
       return updateDays(state, tripId, now, (days) =>

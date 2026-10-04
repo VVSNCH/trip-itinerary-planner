@@ -76,6 +76,10 @@ both so colours and spacing never drift apart.
 - FR-3.4 The user can remove a place from a day.
 - FR-3.5 The user can attach a note and a time to any place.
 - FR-3.6 A day with no places shows an empty state that also acts as a drop target.
+- FR-3.7 The user can fill in a day's times from a start time, using each
+  place's duration and the walk to the next.
+- FR-3.8 A place whose time overlaps the previous place, or leaves too little
+  time to walk from it, shows a warning.
 
 ### FR-4 Map
 - FR-4.1 Places in the active day render as numbered markers.
@@ -84,6 +88,8 @@ both so colours and spacing never drift apart.
 - FR-4.4 Selecting a marker highlights the corresponding list item, and the reverse.
 - FR-4.5 Reordering the list redraws the route.
 - FR-4.6 A failed route request falls back to straight lines between points.
+- FR-4.7 Each walk between places, and each gap between days, links to
+  directions in Google Maps. Each place can be opened in Google Maps.
 
 ### FR-5 Timeline view
 - FR-5.1 A timeline shows all days of the trip in order on one vertical line,

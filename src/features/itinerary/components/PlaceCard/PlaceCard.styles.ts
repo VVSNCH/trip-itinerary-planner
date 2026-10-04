@@ -122,3 +122,17 @@ export const AddNoteButton = styled.button`
     font-size: ${({ theme }) => theme.sizes.iconSm};
   }
 `
+
+export const Warning = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.space(1)};
+  margin-top: ${({ theme }) => theme.space(1.5)};
+  color: ${({ theme }) => theme.colors.danger};
+
+  & > svg {
+    flex-shrink: 0;
+    margin-top: ${({ theme }) => theme.space(0.25)};
+    font-size: ${({ theme }) => theme.sizes.iconSm};
+  }
+`

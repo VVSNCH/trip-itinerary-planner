@@ -301,8 +301,9 @@ closing the tab cannot lose the last edit.
 
 ## 6. Environment configuration
 
-Five values live in `.env`, read once in `constants/api.ts` and never touched
-elsewhere:
+Five `VITE_` values live in `.env`, read once in `constants/api.ts` and never
+touched elsewhere. A sixth, `PORT`, is read only by `vite.config.ts` for the dev
+server and never reaches the client:
 
 ```
 VITE_NOMINATIM_URL

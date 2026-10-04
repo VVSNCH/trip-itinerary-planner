@@ -1,11 +1,19 @@
 import { useId, useRef, useState } from 'react'
 import { useDragLayer, useDrop } from 'react-dnd'
 import { COPY, DND_TYPES, LABELS, MESSAGES } from '@/constants'
-import { AddIcon, Button, SearchIcon, Text, VisuallyHidden } from '@/components/common'
+import {
+  AddIcon,
+  Button,
+  ExternalLink,
+  SearchIcon,
+  Text,
+  VisuallyHidden,
+} from '@/components/common'
 import { EmptyState } from '@/components/feedback'
 import {
   movePlace,
   removePlace,
+  scheduleDay,
   updatePlace,
   useTrips,
   type PlaceChanges,
@@ -14,11 +22,15 @@ import type { Day, Place, Trip } from '@/types'
 import { isTouchDevice } from '../../dnd/backend'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
 import { useListFlip } from '../../hooks/useListFlip'
+import { findClashes } from '../../utils/clashes'
+import { directionsUrl } from '../../utils/directions'
+import { planTimes } from '../../utils/schedule'
 import { describeTransfer, describeWalk } from '../../utils/walking'
 import { DayHeader } from '../DayHeader/DayHeader'
 import { MoveDayDialog } from '../MoveDayDialog/MoveDayDialog'
 import { PlaceCard } from '../PlaceCard/PlaceCard'
 import { PlaceTimeDialog } from '../PlaceTimeDialog/PlaceTimeDialog'
+import { ScheduleDialog } from '../ScheduleDialog/ScheduleDialog'
 import { SortablePlace } from '../SortablePlace/SortablePlace'
 import { Connector, Item, List, Panel, Status, Transfer } from './ItineraryPanel.styles'
 
@@ -46,6 +58,7 @@ export const ItineraryPanel = ({
   const { dispatch } = useTrips()
   const hintId = useId()
   const [timingPlace, setTimingPlace] = useState<Place | null>(null)
+  const [isScheduling, setIsScheduling] = useState(false)
   const [movingPlace, setMovingPlace] = useState<Place | null>(null)
   const [announcement, setAnnouncement] = useState('')
   // The order shown while dragging; the reducer only hears about it on drop.
@@ -125,6 +138,11 @@ export const ItineraryPanel = ({
     dispatch(removePlace(trip.id, placeId))
   }
 
+  const handleSchedule = (start: string) => {
+    dispatch(scheduleDay(trip.id, day.id, planTimes(day.places, start)))
+    setIsScheduling(false)
+  }
+
   const handleSaveTiming = (changes: PlaceChanges) => {
     if (timingPlace) handleUpdate(timingPlace.id, changes)
     setTimingPlace(null)
@@ -139,6 +157,7 @@ export const ItineraryPanel = ({
     )
   const previousStop = trip.days[previousDayIndex]?.places.at(-1)
   const firstStop = places[0]
+  const clashes = findClashes(places)
 
   const hoverDayIndex = trip.days.findIndex((candidate) => candidate.id === hoverDayId)
   const dragStatus = !dragged
@@ -160,6 +179,7 @@ export const ItineraryPanel = ({
         day={day}
         dayNumber={dayNumber}
         onAddPlace={readOnly ? undefined : onAddPlace}
+        onSchedule={readOnly ? undefined : () => setIsScheduling(true)}
       />
       {!readOnly && <VisuallyHidden id={hintId}>{MESSAGES.MOVE_HINT}</VisuallyHidden>}
 
@@ -186,6 +206,12 @@ export const ItineraryPanel = ({
               <Text variant="caption" tone="secondary">
                 {describeTransfer(previousStop, firstStop)}
               </Text>
+              <ExternalLink
+                href={directionsUrl(previousStop, firstStop)}
+                label={COPY.directionsBetween(previousStop.name, firstStop.name)}
+              >
+                {LABELS.DIRECTIONS}
+              </ExternalLink>
             </Transfer>
           )}
           <List ref={listRef}>
@@ -197,6 +223,12 @@ export const ItineraryPanel = ({
                   <Text variant="caption" tone="secondary">
                     {describeWalk(previous, place)}
                   </Text>
+                  <ExternalLink
+                    href={directionsUrl(previous, place, 'walking')}
+                    label={COPY.directionsBetween(previous.name, place.name)}
+                  >
+                    {LABELS.DIRECTIONS}
+                  </ExternalLink>
                 </Connector>
               )
               const select = () => onSelectPlace(isSelected ? null : place.id)
@@ -214,6 +246,7 @@ export const ItineraryPanel = ({
                       onSaveNote={() => {}}
                       onRemove={() => {}}
                       onToggleVisited={() => {}}
+                      warning={clashes.get(place.id)}
                       readOnly
                     />
                   </Item>
@@ -249,6 +282,7 @@ export const ItineraryPanel = ({
                   onToggleVisited={() =>
                     handleUpdate(place.id, { visited: !place.visited })
                   }
+                  warning={clashes.get(place.id)}
                 />
               )
             })}
@@ -275,6 +309,15 @@ export const ItineraryPanel = ({
           currentDayId={day.id}
           onMove={handleMoveToChosenDay}
           onClose={() => setMovingPlace(null)}
+        />
+      )}
+
+      {isScheduling && (
+        <ScheduleDialog
+          day={day}
+          dayNumber={dayNumber}
+          onSave={handleSchedule}
+          onClose={() => setIsScheduling(false)}
         />
       )}
 

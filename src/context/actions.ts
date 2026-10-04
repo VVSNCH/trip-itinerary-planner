@@ -37,6 +37,15 @@ export type TripAction =
     }
   | { type: 'REMOVE_PLACE'; payload: { tripId: number; placeId: number; now: string } }
   | { type: 'MOVE_PLACE'; payload: PlaceMove & { tripId: number; now: string } }
+  | {
+      type: 'SCHEDULE_DAY'
+      payload: {
+        tripId: number
+        dayId: number
+        times: Record<number, string>
+        now: string
+      }
+    }
 
 const now = () => new Date().toISOString()
 
@@ -86,4 +95,13 @@ export const removePlace = (tripId: number, placeId: number): TripAction => ({
 export const movePlace = (tripId: number, move: PlaceMove): TripAction => ({
   type: 'MOVE_PLACE',
   payload: { ...move, tripId, now: now() },
+})
+
+export const scheduleDay = (
+  tripId: number,
+  dayId: number,
+  times: Record<number, string>
+): TripAction => ({
+  type: 'SCHEDULE_DAY',
+  payload: { tripId, dayId, times, now: now() },
 })

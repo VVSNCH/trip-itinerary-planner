@@ -17,6 +17,10 @@ export const List = styled.ol`
 
 // The dotted line lines up under the drag handles, joining one card to the next.
 export const Connector = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(1, 3)};
   margin-left: ${({ theme }) => theme.space(5)};
   padding: ${({ theme }) => theme.space(2, 0, 2, 4)};
   border-left: ${({ theme }) => theme.sizes.border} dashed
@@ -27,6 +31,7 @@ export const Connector = styled.div`
 export const Transfer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   margin-bottom: -${({ theme }) => theme.space(2)};
   margin-left: ${({ theme }) => theme.space(5)};
   padding: ${({ theme }) => theme.space(0, 0, 2, 4)};

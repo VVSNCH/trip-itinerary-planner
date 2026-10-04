@@ -1,17 +1,18 @@
 import { COPY, LABELS } from '@/constants'
-import { AddIcon, Button, Text } from '@/components/common'
+import { AddIcon, Button, ClockIcon, Text } from '@/components/common'
 import type { Day } from '@/types'
 import { formatLongDay } from '@/utils/dates'
 import { summarizeDay } from '../../utils/timing'
-import { Header, TitleBlock } from './DayHeader.styles'
+import { Actions, Header, TitleBlock } from './DayHeader.styles'
 
 export interface DayHeaderProps {
   day: Day
   dayNumber: number
   onAddPlace?: () => void
+  onSchedule?: () => void
 }
 
-export const DayHeader = ({ day, dayNumber, onAddPlace }: DayHeaderProps) => (
+export const DayHeader = ({ day, dayNumber, onAddPlace, onSchedule }: DayHeaderProps) => (
   <Header>
     <TitleBlock>
       <Text variant="overline">{COPY.day(dayNumber)}</Text>
@@ -20,10 +21,17 @@ export const DayHeader = ({ day, dayNumber, onAddPlace }: DayHeaderProps) => (
       </Text>
       <Text tone="secondary">{summarizeDay(day.places)}</Text>
     </TitleBlock>
-    {onAddPlace && (
-      <Button variant="text" startIcon={<AddIcon />} onClick={onAddPlace}>
-        {LABELS.ADD}
-      </Button>
-    )}
+    <Actions>
+      {onSchedule && day.places.length > 0 && (
+        <Button variant="text" startIcon={<ClockIcon />} onClick={onSchedule}>
+          {LABELS.FILL_TIMES}
+        </Button>
+      )}
+      {onAddPlace && (
+        <Button variant="text" startIcon={<AddIcon />} onClick={onAddPlace}>
+          {LABELS.ADD}
+        </Button>
+      )}
+    </Actions>
   </Header>
 )
