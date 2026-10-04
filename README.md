@@ -5,7 +5,7 @@ drag them into order, and see each day's walking route on a map. Trips are saved
 in the browser and can be shared as a read-only link, with no account and no
 server.
 
-**Live:** _add the Netlify URL here_
+**Live:** https://deluxe-lokum-7cb537.netlify.app
 
 ![Planner on desktop: the day's places on the left, the walking route on the right](docs/screenshots/planner.png)
 
@@ -23,8 +23,16 @@ server.
   its planned hours, its span and the walk between stops. Each day also opens with
   how far it starts from the previous day's last stop: a walk when it's close, or
   the distance and "plan transport" when the trip changes town.
+- **Planning help.** "Fill in times" schedules a day from a start time, using
+  each stop's duration and the walk to the next. A stop that starts before the
+  previous one finishes, or doesn't leave time for the walk, gets a warning.
+- **Directions.** Every walk between stops, and every "plan transport" gap
+  between days, has a Directions link that opens Google Maps. Each place's menu
+  can open it there too.
 - **Drag and drop.** Reorder within a day, or drop a card on another day's tile
-  to move it there. Works with a mouse, on touch screens, and from the keyboard.
+  to move it there. With a mouse, drag by the handle; on a phone, long-press
+  anywhere on the card and it lifts with a short buzz. The keyboard works too,
+  and every card's menu can move it up, down or to another day without dragging.
 - **Map.** Numbered stops and the walking route for the open day. Selecting a stop
   in the list or on the map selects it in both.
 - **Timeline.** The whole trip on one line down the page: each day, its stops at
@@ -51,16 +59,16 @@ npm run dev
 
 | Script | Does |
 |---|---|
-| `npm run dev` | Dev server at http://localhost:5173 |
+| `npm run dev` | Dev server at http://localhost:5000 (`PORT` in `.env` changes it) |
 | `npm run build` | Production build into `dist/` |
-| `npm run preview` | Serves the production build |
+| `npm run preview` | Serves the production build, also on port 5000 |
 | `npm run typecheck` | TypeScript, strict |
 | `npm run lint` | ESLint, zero warnings allowed |
 | `npm test` | Vitest |
 | `npm run format` | Prettier over `src/` |
 
-No configuration is needed. `.env.example` lists optional overrides for the
-search and routing servers, the map style and the fallback tiles. They are read at build time and end up in the
+No configuration is needed. `.env.example` lists optional overrides: the dev
+server port, the search and routing servers, the map style and the fallback tiles. The `VITE_` ones are read at build time and end up in the
 client bundle, so nothing secret belongs there.
 
 Deployed on Netlify from `main`. `netlify.toml` holds the build command and the
@@ -162,7 +170,8 @@ Every move is announced through a live region.
 
 The trip goes in the URL fragment because browsers never send the fragment to a
 server. That is what makes "nothing about your trip leaves your browser" true for
-shared trips as well. A five-day, 22-place trip comes to about 2,700 characters.
+shared trips as well. The Google Maps links are ordinary links: nothing is sent
+to Google unless the user clicks one, and then only those two points. A five-day, 22-place trip comes to about 2,700 characters.
 Past 4,000 the share dialog warns that some apps may cut the link short. Links that
 are truncated, damaged or from another format version show an error page, never a
 blank screen.
@@ -228,6 +237,7 @@ Vitest with Testing Library, aimed at logic that breaks quietly:
 - day progress: what counts as over, complete, and where "now" sits
 - trips saved before the visited flag existed still loading
 - walking versus "plan transport" between days
+- filling in a day's times, spotting clashes, and building the Google Maps links
 - a keyboard reorder through the real itinerary panel
 
 Appearance isn't tested, and there are no snapshot tests. A snapshot mostly
@@ -242,7 +252,7 @@ Each of these is a decision, not an oversight.
 | Accounts and a backend | The brief asks for zero running cost. localStorage plus share links cover single-user planning without storing anyone's data. |
 | Real-time collaboration | Needs a server and conflict handling. A share link covers "show my plan to someone". |
 | Sync across devices | Same reason. Sharing a link to yourself and saving a copy works today. |
-| Transport modes | One honest mode, walking, beats driving and transit times from free servers with no traffic or timetable data. |
+| Transport modes | One honest mode, walking, beats driving and transit times from free servers with no traffic or timetable data. Between towns, a Directions link hands off to Google Maps instead. |
 | Opening hours, prices, bookings | Data that is wrong more often than not, from sources without a free API. |
 | Offline mode and a service worker | Saved trips already work offline. Offline maps would mean bulk-downloading map tiles, which the free tile services don't allow. |
 | A state library | See "State lives in three places". The reducer is the whole job. |
