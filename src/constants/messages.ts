@@ -22,6 +22,8 @@ export const MESSAGES = {
     'To move a place, hold Ctrl and press the arrow keys: up and down reorder the day, left and right move it to the previous or next day.',
   DURATION_INVALID: 'Use whole minutes, up to 24 hours',
   GENERIC_ERROR: 'Something went wrong. Try again.',
+  SCHEDULE_HINT:
+    'Each stop starts after the one before it, plus the walk between them. Stops without a duration get an hour. Existing times are replaced.',
 } as const
 
 export const LABELS = {
@@ -69,6 +71,10 @@ export const LABELS = {
   MOVE_UP: 'Move up',
   MOVE_DOWN: 'Move down',
   MOVE_TO_DAY: 'Move to another day',
+  FILL_TIMES: 'Fill in times',
+  START_TIME: 'Start time',
+  DIRECTIONS: 'Directions',
+  OPEN_IN_MAPS: 'Open in Google Maps',
   MARK_VISITED: 'Mark as visited',
   MARK_NOT_VISITED: 'Mark as not visited',
   COMPLETED: 'Completed',
@@ -92,6 +98,7 @@ export const DIALOGS = {
   DELETE_CONFIRM: 'Delete trip',
   EDIT_TIME: 'Time and duration',
   SHARE: 'Share itinerary',
+  FILL_TIMES: 'Fill in times',
   MOVE_TO_DAY: 'Move to another day',
 } as const
 
@@ -109,6 +116,13 @@ export const COPY = {
   day: (dayNumber: number) => `Day ${dayNumber}`,
   dayOption: (dayNumber: number, shortDate: string, placeCount: string) =>
     `Day ${dayNumber} · ${shortDate} · ${placeCount}`,
+  scheduleFor: (dayNumber: number, placeCount: string) =>
+    `Day ${dayNumber} · ${placeCount}, in their current order`,
+  clashOverlap: (placeName: string) => `Starts before ${placeName} finishes`,
+  clashTight: (placeName: string, walkMins: number) =>
+    `Not enough time for the walk from ${placeName} (about ${walkMins} min)`,
+  directionsBetween: (from: string, to: string) =>
+    `Directions from ${from} to ${to}, opens Google Maps`,
   toggleVisited: (placeName: string, isVisited: boolean) =>
     isVisited ? `Mark ${placeName} as not visited` : `Mark ${placeName} as visited`,
   fromPreviousDay: (placeName: string, dayNumber: number) =>

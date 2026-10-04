@@ -15,7 +15,7 @@ export const toMinutes = (time: string) => {
   return hours * MINUTES_PER_HOUR + minutes
 }
 
-const toClock = (totalMins: number) => {
+export const toClock = (totalMins: number) => {
   const hours = Math.floor(totalMins / MINUTES_PER_HOUR) % 24
   const minutes = totalMins % MINUTES_PER_HOUR
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`

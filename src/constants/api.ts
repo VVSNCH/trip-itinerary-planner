@@ -38,6 +38,12 @@ export const TILES = {
   MAX_ZOOM: 19,
 } as const
 
+// Plain links the user opens; nothing is sent to Google until they click.
+export const GOOGLE_MAPS = {
+  DIRECTIONS_URL: 'https://www.google.com/maps/dir/',
+  SEARCH_URL: 'https://www.google.com/maps/search/',
+} as const
+
 export const APP_CONTACT = readEnv(env.VITE_APP_CONTACT, 'trip-itinerary-planner')
 
 export const REQUEST_TIMEOUT_MS = 8000

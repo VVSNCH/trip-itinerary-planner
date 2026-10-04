@@ -177,3 +177,24 @@ export const ChipSlot = styled.div`
   gap: ${({ theme }) => theme.space(2)};
   margin-top: ${({ theme }) => theme.space(1.5)};
 `
+
+export const TravelLinks = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: ${({ theme }) => theme.space(2, 3)};
+`
+
+export const Warning = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.space(1)};
+  margin-top: ${({ theme }) => theme.space(1)};
+  color: ${({ theme }) => theme.colors.danger};
+
+  & > svg {
+    flex-shrink: 0;
+    margin-top: ${({ theme }) => theme.space(0.25)};
+    font-size: ${({ theme }) => theme.sizes.iconSm};
+  }
+`

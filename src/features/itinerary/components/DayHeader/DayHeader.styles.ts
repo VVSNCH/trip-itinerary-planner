@@ -13,3 +13,10 @@ export const TitleBlock = styled.div`
   gap: ${({ theme }) => theme.space(0.5)};
   min-width: 0;
 `
+
+export const Actions = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-end;
+`

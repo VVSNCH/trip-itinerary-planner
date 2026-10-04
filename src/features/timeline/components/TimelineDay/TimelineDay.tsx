@@ -5,10 +5,14 @@ import {
   ChevronRightIcon,
   Chip,
   ClockIcon,
+  ExternalLink,
   StopBadge,
   Text,
   TravelIcon,
+  WarningIcon,
 } from '@/components/common'
+import { findClashes } from '@/features/itinerary/utils/clashes'
+import { directionsUrl } from '@/features/itinerary/utils/directions'
 import {
   dayProgress,
   isDayComplete,
@@ -37,6 +41,8 @@ import {
   StopNode,
   Time,
   TravelBody,
+  TravelLinks,
+  Warning,
 } from './TimelineDay.styles'
 
 export interface TimelineDayProps {
@@ -70,6 +76,7 @@ export const TimelineDay = ({
   const isToday = progress === 'today'
   // On today's day, "now" goes before the first stop that hasn't started yet.
   const nowAt = isToday ? nowIndex(day.places, now.minutes) : -1
+  const clashes = findClashes(day.places)
 
   const nowEntry = (
     <Entry>
@@ -95,11 +102,19 @@ export const TimelineDay = ({
             <Text variant="caption" tone="secondary">
               {COPY.fromPreviousDay(arrivingFrom.place.name, arrivingFrom.dayNumber)}
             </Text>
-            <Chip
-              tone="outline"
-              icon={<TravelIcon />}
-              label={describeTransfer(arrivingFrom.place, firstPlace)}
-            />
+            <TravelLinks>
+              <Chip
+                tone="outline"
+                icon={<TravelIcon />}
+                label={describeTransfer(arrivingFrom.place, firstPlace)}
+              />
+              <ExternalLink
+                href={directionsUrl(arrivingFrom.place, firstPlace)}
+                label={COPY.directionsBetween(arrivingFrom.place.name, firstPlace.name)}
+              >
+                {LABELS.DIRECTIONS}
+              </ExternalLink>
+            </TravelLinks>
           </TravelBody>
         </Entry>
       )}
@@ -191,6 +206,14 @@ export const TimelineDay = ({
                   <Text variant="caption" tone="secondary">
                     {place.note}
                   </Text>
+                )}
+                {clashes.has(place.id) && (
+                  <Warning>
+                    <WarningIcon />
+                    <Text variant="caption" tone="danger">
+                      {clashes.get(place.id)}
+                    </Text>
+                  </Warning>
                 )}
               </Body>
             </Entry>
