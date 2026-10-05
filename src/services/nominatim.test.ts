@@ -57,3 +57,22 @@ it('builds a padded viewbox around the trip, or none without places', () => {
   expect(toViewbox([])).toBeNull()
   expect(toViewbox([{ lat: 38.7, lng: -9.2 }])).toBe('-9.3,38.8,-9.1,38.6')
 })
+
+it("keeps the place's English Wikipedia article and ignores other languages", async () => {
+  stubFetch([
+    {
+      ...santaLuzia,
+      place_id: 201,
+      extratags: { wikipedia: 'en:Miradouro de Santa Luzia' },
+    },
+    {
+      ...santaLuzia,
+      place_id: 202,
+      extratags: { wikipedia: 'pt:Miradouro de Santa Luzia' },
+    },
+  ])
+
+  const [english, portuguese] = await searchPlaces('miradouro', null)
+  expect(english?.wiki).toBe('Miradouro de Santa Luzia')
+  expect(portuguese).not.toHaveProperty('wiki')
+})

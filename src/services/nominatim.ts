@@ -12,6 +12,7 @@ interface NominatimItem {
   type?: string
   category?: string
   address?: Record<string, string>
+  extratags?: Record<string, string> | null
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -49,6 +50,7 @@ const buildUrl = (query: string, viewbox: string | null) => {
     q: query,
     format: 'jsonv2',
     addressdetails: '1',
+    extratags: '1',
     limit: String(NOMINATIM.RESULT_LIMIT),
   })
   if (viewbox) params.set('viewbox', viewbox)
@@ -59,6 +61,12 @@ const buildUrl = (query: string, viewbox: string | null) => {
 }
 
 const readable = (value: string | undefined) => value?.replace(/_/g, ' ').trim() ?? ''
+
+// OpenStreetMap tags articles as "en:Title"; only English ones are used.
+const englishArticle = (tag: string | undefined) => {
+  const [lang, ...title] = tag?.split(':') ?? []
+  return lang === 'en' && title.length > 0 ? title.join(':').trim() : undefined
+}
 
 const toResult = (item: NominatimItem): PlaceSearchResult | null => {
   const lat = Number(item.lat)
@@ -77,6 +85,7 @@ const toResult = (item: NominatimItem): PlaceSearchResult | null => {
     .filter(Boolean)
     .join(' ')
   const category = item.type && item.type !== 'yes' ? item.type : item.category
+  const wiki = englishArticle(item.extratags?.wikipedia)
 
   return {
     key: String(item.place_id),
@@ -87,6 +96,7 @@ const toResult = (item: NominatimItem): PlaceSearchResult | null => {
     area: address.suburb ?? address.neighbourhood ?? address.quarter ?? null,
     lat,
     lng,
+    ...(wiki ? { wiki } : {}),
   }
 }
 

@@ -74,6 +74,7 @@ export const LABELS = {
   FILL_TIMES: 'Fill in times',
   START_TIME: 'Start time',
   DIRECTIONS: 'Directions',
+  WIKIPEDIA: 'Wikipedia',
   OPEN_IN_MAPS: 'Open in Google Maps',
   MARK_VISITED: 'Mark as visited',
   MARK_NOT_VISITED: 'Mark as not visited',
@@ -121,6 +122,8 @@ export const COPY = {
   clashOverlap: (placeName: string) => `Starts before ${placeName} finishes`,
   clashTight: (placeName: string, walkMins: number) =>
     `Not enough time for the walk from ${placeName} (about ${walkMins} min)`,
+  readOnWikipedia: (placeName: string) =>
+    `Read about ${placeName} on Wikipedia, opens in a new tab`,
   directionsBetween: (from: string, to: string) =>
     `Directions from ${from} to ${to}, opens Google Maps`,
   toggleVisited: (placeName: string, isVisited: boolean) =>

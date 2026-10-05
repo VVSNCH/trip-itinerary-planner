@@ -47,6 +47,27 @@ describe('loadTrips', () => {
     expect(loadTrips()).toEqual({ trips: [older], wasReset: false })
   })
 
+  it('reports a reset when a place has the wrong type of Wikipedia title', () => {
+    const place = {
+      id: 1,
+      name: 'P',
+      address: '',
+      category: '',
+      lat: 0,
+      lng: 0,
+      time: null,
+      note: null,
+      durationMins: null,
+      wiki: 42,
+    }
+    writeRaw(
+      JSON.stringify([
+        { ...trip, days: [{ id: 1, date: '2026-10-09', places: [place] }] },
+      ])
+    )
+    expect(loadTrips().wasReset).toBe(true)
+  })
+
   it('reports a reset when the JSON is corrupt', () => {
     writeRaw('[{"id": 1, "name": "Lis')
     expect(loadTrips()).toEqual({ trips: [], wasReset: true })

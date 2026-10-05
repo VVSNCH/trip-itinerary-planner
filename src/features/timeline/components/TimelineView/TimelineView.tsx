@@ -2,6 +2,7 @@ import { COPY } from '@/constants'
 import { Text } from '@/components/common'
 import { minutesOfDay } from '@/features/itinerary/utils/progress'
 import { formatDuration, plannedMinutes } from '@/features/itinerary/utils/timing'
+import { useWikiSummaries } from '@/features/places/hooks/useWikiSummaries'
 import { useNow } from '@/hooks/useNow'
 import type { Place, Trip } from '@/types'
 import { formatClock, toISODate } from '@/utils/dates'
@@ -20,6 +21,7 @@ export const TimelineView = ({ trip, onOpenDay, onToggleVisited }: TimelineViewP
   const now = { minutes: minutesOfDay(clock), label: formatClock(clock) }
   const places = trip.days.flatMap((day) => day.places)
   const planned = plannedMinutes(places)
+  const summaryFor = useWikiSummaries(places)
   const perDay = trip.days.length > 0 ? Math.round(planned / trip.days.length) : 0
   const summary = [
     plural(places.length, 'place'),
@@ -58,6 +60,7 @@ export const TimelineView = ({ trip, onOpenDay, onToggleVisited }: TimelineViewP
             now={now}
             onOpen={() => onOpenDay(day.id)}
             onToggleVisited={onToggleVisited}
+            summaryFor={summaryFor}
           />
         ))}
       </Timeline>

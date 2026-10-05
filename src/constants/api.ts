@@ -38,6 +38,16 @@ export const TILES = {
   MAX_ZOOM: 19,
 } as const
 
+// Photos and short descriptions. One request covers up to BATCH_SIZE places,
+// which keeps a whole trip well inside Wikipedia's rate limits.
+export const WIKIPEDIA = {
+  API_URL: 'https://en.wikipedia.org/w/api.php',
+  ARTICLE_URL: 'https://en.wikipedia.org/wiki/',
+  BATCH_SIZE: 20,
+  THUMB_SIZE: 320,
+  SENTENCES: 2,
+} as const
+
 // Plain links the user opens; nothing is sent to Google until they click.
 export const GOOGLE_MAPS = {
   DIRECTIONS_URL: 'https://www.google.com/maps/dir/',

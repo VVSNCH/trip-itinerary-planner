@@ -16,7 +16,8 @@
           "lng": 80.2697,
           "time": "06:30",
           "durationMins": 90,
-          "note": "Go early for the morning pooja. Leave footwear at the counter outside."
+          "note": "Go early for the morning pooja. Leave footwear at the counter outside.",
+          "wiki": "Kapaleeshwarar Temple"
         },
         {
           "id": 2,
@@ -38,7 +39,8 @@
           "lng": 80.277,
           "time": "09:30",
           "durationMins": 75,
-          "note": "8th century Vishnu temple. Closes around 12:00, so don't push this later."
+          "note": "8th century Vishnu temple. Closes around 12:00, so don't push this later.",
+          "wiki": "Parthasarathy Temple, Chennai"
         },
         {
           "id": 4,
@@ -49,7 +51,8 @@
           "lng": 80.2717,
           "time": "16:30",
           "durationMins": 60,
-          "note": null
+          "note": null,
+          "wiki": "Ashtalakshmi Temple, Chennai"
         },
         {
           "id": 5,
@@ -60,7 +63,8 @@
           "lng": 80.2721,
           "time": "17:45",
           "durationMins": 60,
-          "note": "Sunset walk and sundal from the carts."
+          "note": "Sunset walk and sundal from the carts.",
+          "wiki": "Edward Elliot's Beach"
         }
       ]
     },
@@ -77,7 +81,8 @@
           "lng": 79.6997,
           "time": "07:00",
           "durationMins": 90,
-          "note": "One of the five elemental Shiva temples (earth). Look for the sacred mango tree in the inner courtyard."
+          "note": "One of the five elemental Shiva temples (earth). Look for the sacred mango tree in the inner courtyard.",
+          "wiki": "Ekambareswarar Temple (Kanchipuram)"
         },
         {
           "id": 7,
@@ -88,7 +93,8 @@
           "lng": 79.7036,
           "time": "09:00",
           "durationMins": 60,
-          "note": null
+          "note": null,
+          "wiki": "Kamakshi Amman Temple"
         },
         {
           "id": 8,
@@ -99,7 +105,8 @@
           "lng": 79.6895,
           "time": "10:30",
           "durationMins": 60,
-          "note": "Oldest structure in the city, built by the Pallavas in sandstone. Quiet and worth the detour."
+          "note": "Oldest structure in the city, built by the Pallavas in sandstone. Quiet and worth the detour.",
+          "wiki": "Kailasanathar Temple, Kanchipuram"
         },
         {
           "id": 9,
@@ -110,7 +117,8 @@
           "lng": 79.7246,
           "time": "16:00",
           "durationMins": 90,
-          "note": "Look up in the hundred pillar hall for the carved stone chain."
+          "note": "Look up in the hundred pillar hall for the carved stone chain.",
+          "wiki": "Varadharaja Perumal Temple, Kanchipuram"
         }
       ]
     },
@@ -127,7 +135,8 @@
           "lng": 78.6898,
           "time": "06:30",
           "durationMins": 180,
-          "note": "Huge complex with seven walls. Buy the rooftop ticket for the gopuram view."
+          "note": "Huge complex with seven walls. Buy the rooftop ticket for the gopuram view.",
+          "wiki": "Ranganathaswamy Temple, Srirangam"
         },
         {
           "id": 11,
@@ -138,7 +147,8 @@
           "lng": 78.7056,
           "time": "10:00",
           "durationMins": 75,
-          "note": "The water element temple. The sanctum floor has a spring that never dries."
+          "note": "The water element temple. The sanctum floor has a spring that never dries.",
+          "wiki": "Jambukeswarar Temple, Thiruvanaikaval"
         },
         {
           "id": 12,
@@ -160,7 +170,8 @@
           "lng": 78.6969,
           "time": "17:00",
           "durationMins": 90,
-          "note": "About 400 steps cut into the rock. Time it for sunset over the river."
+          "note": "About 400 steps cut into the rock. Time it for sunset over the river.",
+          "wiki": "Ucchi Pillayar Temple, Rockfort"
         }
       ]
     },
@@ -177,7 +188,8 @@
           "lng": 79.1318,
           "time": "07:00",
           "durationMins": 150,
-          "note": "UNESCO site, finished in 1010 by Raja Raja Chola. The granite stone at the top weighs about 80 tonnes."
+          "note": "UNESCO site, finished in 1010 by Raja Raja Chola. The granite stone at the top weighs about 80 tonnes.",
+          "wiki": "Brihadisvara Temple"
         },
         {
           "id": 15,
@@ -188,7 +200,8 @@
           "lng": 79.1338,
           "time": "10:00",
           "durationMins": 30,
-          "note": null
+          "note": null,
+          "wiki": "Sivaganga Park"
         },
         {
           "id": 16,
@@ -199,7 +212,8 @@
           "lng": 79.1371,
           "time": "11:00",
           "durationMins": 120,
-          "note": "Includes the Saraswathi Mahal Library and the Chola bronze gallery."
+          "note": "Includes the Saraswathi Mahal Library and the Chola bronze gallery.",
+          "wiki": "Thanjavur Maratha Palace"
         },
         {
           "id": 17,
@@ -210,7 +224,8 @@
           "lng": 79.1318,
           "time": "18:00",
           "durationMins": 60,
-          "note": "Come back once the vimana is lit up."
+          "note": "Come back once the vimana is lit up.",
+          "wiki": "Brihadisvara Temple"
         }
       ]
     },
@@ -227,7 +242,8 @@
           "lng": 78.1193,
           "time": "06:00",
           "durationMins": 180,
-          "note": "No phones inside, so leave them at the counter. Enter from the east tower and don't miss the thousand pillar hall."
+          "note": "No phones inside, so leave them at the counter. Enter from the east tower and don't miss the thousand pillar hall.",
+          "wiki": "Meenakshi Temple"
         },
         {
           "id": 19,
@@ -249,7 +265,8 @@
           "lng": 78.1134,
           "time": "10:15",
           "durationMins": 60,
-          "note": null
+          "note": null,
+          "wiki": "Koodal Azhagar Temple"
         },
         {
           "id": 22,
@@ -260,7 +277,8 @@
           "lng": 78.1394,
           "time": "11:45",
           "durationMins": 75,
-          "note": "Has the blood-stained dhoti Gandhi wore on 30 January 1948."
+          "note": "Has the blood-stained dhoti Gandhi wore on 30 January 1948.",
+          "wiki": "Gandhi Memorial Museum, Madurai"
         },
         {
           "id": 21,
@@ -271,7 +289,8 @@
           "lng": 78.124,
           "time": "15:00",
           "durationMins": 90,
-          "note": "Check the timing for the evening sound and light show."
+          "note": "Check the timing for the evening sound and light show.",
+          "wiki": "Thirumalai Nayakkar Mahal"
         }
       ]
     }

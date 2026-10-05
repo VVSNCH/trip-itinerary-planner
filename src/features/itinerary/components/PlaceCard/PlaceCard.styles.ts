@@ -1,5 +1,7 @@
 import styled, { css } from 'styled-components'
 
+const SUMMARY_LINES = 3
+
 // While dragging, the card stays in the list as an empty placeholder of the same size.
 export const Row = styled.div<{ $isPlaceholder: boolean }>`
   visibility: ${({ $isPlaceholder }) => ($isPlaceholder ? 'hidden' : 'visible')};
@@ -134,5 +136,24 @@ export const Warning = styled.div`
     flex-shrink: 0;
     margin-top: ${({ theme }) => theme.space(0.25)};
     font-size: ${({ theme }) => theme.sizes.iconSm};
+  }
+`
+
+// Above the stretched select button, so the Wikipedia link stays clickable.
+export const Summary = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.space(1)};
+  margin-top: ${({ theme }) => theme.space(1.5)};
+
+  /* Three lines is enough for a taste; the link has the rest. */
+  & > :first-child {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: ${SUMMARY_LINES};
   }
 `

@@ -18,6 +18,7 @@ import {
   useTrips,
   type PlaceChanges,
 } from '@/context'
+import { useWikiSummaries } from '@/features/places/hooks/useWikiSummaries'
 import type { Day, Place, Trip } from '@/types'
 import { isTouchDevice } from '../../dnd/backend'
 import type { PlaceDragItem, PlaceDropResult } from '../../dnd/types'
@@ -158,6 +159,7 @@ export const ItineraryPanel = ({
   const previousStop = trip.days[previousDayIndex]?.places.at(-1)
   const firstStop = places[0]
   const clashes = findClashes(places)
+  const summaryFor = useWikiSummaries(day.places)
 
   const hoverDayIndex = trip.days.findIndex((candidate) => candidate.id === hoverDayId)
   const dragStatus = !dragged
@@ -247,6 +249,7 @@ export const ItineraryPanel = ({
                       onRemove={() => {}}
                       onToggleVisited={() => {}}
                       warning={clashes.get(place.id)}
+                      summary={summaryFor(place)}
                       readOnly
                     />
                   </Item>
@@ -283,6 +286,7 @@ export const ItineraryPanel = ({
                     handleUpdate(place.id, { visited: !place.visited })
                   }
                   warning={clashes.get(place.id)}
+                  summary={summaryFor(place)}
                 />
               )
             })}
