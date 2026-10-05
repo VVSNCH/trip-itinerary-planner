@@ -61,6 +61,9 @@ both so colours and spacing never drift apart.
 - FR-1.4 Changing dates to a shorter range warns before discarding orphaned days.
 - FR-1.5 The user can delete a trip, with confirmation.
 - FR-1.6 All trips are listed on a home screen with name, dates and place count.
+- FR-1.7 Each trip card shows a map of the route and whether the trip is
+  upcoming (with a countdown), under way (which day) or past.
+- FR-1.8 The user can duplicate a trip to plan from a copy.
 
 ### FR-2 Place search
 - FR-2.1 The user can search places by free text.
@@ -68,6 +71,9 @@ both so colours and spacing never drift apart.
 - FR-2.3 Search input is debounced to respect the provider's rate limit.
 - FR-2.4 Selecting a result adds the place to the currently active day.
 - FR-2.5 Empty results, provider errors and offline state each show a distinct message.
+- FR-2.6 Before typing, quick ideas search for common kinds of place within
+  walking distance of the day's stops.
+- FR-2.7 Places linked to a Wikipedia article show its photo and opening lines.
 
 ### FR-3 Itinerary building
 - FR-3.1 Each day holds an ordered list of places.

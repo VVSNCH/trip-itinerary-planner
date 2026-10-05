@@ -64,6 +64,7 @@ trip-itinerary-planner/
 │   │   ├── storage.ts
 │   │   ├── nominatim.ts
 │   │   ├── osrm.ts
+│   │   ├── wikipedia.ts
 │   │   └── http.ts
 │   ├── constants/
 │   │   ├── index.ts
@@ -203,6 +204,8 @@ not pass MUI's full props through.
 | `Toast` | MUI Snackbar | Non-blocking notices (copied link, route fallback) |
 | `Skeleton` | MUI Skeleton | Loading placeholders |
 | `StopBadge` | — | Numbered stop, or a tick once visited, on cards and the timeline |
+| `Thumbnail` | — | Place photos on cards, the stop card and the timeline |
+| `ExternalLink` | MUI Link | Directions and Wikipedia links that open in a new tab |
 | `FloatingButton` | MUI Fab | New trip on phones |
 | `VisuallyHidden` | — | Text for screen readers only, such as drag hints |
 | `icons` | MUI icons | The only icon set; features import icons from here |
@@ -339,9 +342,10 @@ export const requestJson = (url, { signal, timeoutMs = REQUEST_TIMEOUT_MS } = {}
 
 Every outbound call goes through `requestJson`, which applies a timeout, a
 user-agent-appropriate header, and JSON parsing, and converts non-2xx into a
-typed error. `nominatim.ts` and `osrm.ts` sit on top and expose domain
-functions — `searchPlaces(query, viewbox, signal)`, `getRoute(routeKey, signal)` —
-returning already-shaped domain objects, never raw provider payloads.
+typed error. `nominatim.ts`, `osrm.ts` and `wikipedia.ts` sit on top and expose
+domain functions — `searchPlaces(query, viewbox, signal, bounded)`,
+`getRoute(routeKey, signal)`, `getSummaries(titles, signal)` — returning
+already-shaped domain objects, never raw provider payloads.
 
 Provider response shapes do not leak past this layer. That is what makes
 replacing a provider a one-file change.

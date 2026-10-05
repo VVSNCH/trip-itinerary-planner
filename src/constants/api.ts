@@ -35,6 +35,8 @@ export const TILES = {
     '<a href="https://openfreemap.org">OpenFreeMap</a> &copy; <a href="https://www.openmaptiles.org/">OpenMapTiles</a> Data from <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   URL: readEnv(env.VITE_TILE_URL, 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'),
   ATTRIBUTION: '&copy; OpenStreetMap contributors',
+  // Plain-text version for places that can't render HTML, like the trip card thumbnails.
+  ATTRIBUTION_TEXT: '© OpenStreetMap',
   MAX_ZOOM: 19,
 } as const
 

@@ -42,8 +42,9 @@ export const LABELS = {
   CHANGE_DATES: 'Change dates',
   DELETE: 'Delete',
   TRIP_ACTIONS: 'Trip actions',
-  UPCOMING: 'Upcoming',
   PAST: 'Past',
+  TOMORROW: 'Tomorrow',
+  DUPLICATE: 'Duplicate',
   PREVIOUS_MONTH: 'Previous month',
   NEXT_MONTH: 'Next month',
   NOT_SET: 'Not set',
@@ -116,6 +117,9 @@ export const COPY = {
   removedPlaces: (dayLabel: string, placeCount: string, verb: 'has' | 'have') =>
     `${dayLabel} ${verb} ${placeCount}. Shortening the trip will remove them.`,
   day: (dayNumber: number) => `Day ${dayNumber}`,
+  startsIn: (days: number) => `In ${days} days`,
+  dayOf: (day: number, dayCount: number) => `Day ${day} of ${dayCount}`,
+  copyOf: (name: string) => `${name} (copy)`,
   dayOption: (dayNumber: number, shortDate: string, placeCount: string) =>
     `Day ${dayNumber} · ${shortDate} · ${placeCount}`,
   scheduleFor: (dayNumber: number, placeCount: string) =>

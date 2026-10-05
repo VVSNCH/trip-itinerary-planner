@@ -15,10 +15,17 @@ server.
 
 ## What it does
 
-- **Trips.** Create, rename, re-date and delete trips. Changing the dates keeps
-  each day's places, and warns before a shorter range would drop any.
+- **Trips.** Create, rename, re-date, duplicate and delete trips. Each card shows
+  the route on a small map and where the trip stands: "In 7 days", "Day 2 of 5"
+  or "Past". Changing the dates keeps each day's places, and warns before a
+  shorter range would drop any.
 - **Place search.** Search OpenStreetMap by name, biased towards the area the day
-  already covers, and add a result to the open day.
+  already covers, and add a result to the open day. Before typing, quick ideas
+  (Temples, Food, Cafés, Museums, Parks, Hotels) find places within walking
+  distance of the day's stops.
+- **Photos and descriptions.** Places with a Wikipedia article show its photo on
+  their card, the map's stop card and the timeline. Selecting a card shows the
+  article's opening lines and a link to the rest.
 - **Itinerary.** Each place gets an optional time, duration and note. A day shows
   its planned hours, its span and the walk between stops. Each day also opens with
   how far it starts from the previous day's last stop: a walk when it's close, or
@@ -91,8 +98,14 @@ single-page-app fallback that makes deep links survive a refresh.
 
 The external services all run on OpenStreetMap data: **OpenFreeMap** vector tiles
 for the map, **Nominatim** for search and the **FOSSGIS OSRM** server's walking
-profile for routes. They are free and run on donated infrastructure, so each one
-has a defined failure path instead of an assumption that it is up.
+profile for routes, plus **Wikipedia** for place photos and descriptions. They are
+free and run on donated infrastructure, so each one has a defined failure path
+instead of an assumption that it is up.
+
+Photos come from the Wikipedia article OpenStreetMap links to each place, saved
+with the place when it's added. A whole day or trip is fetched in a single
+request, so the app stays well inside Wikipedia's rate limits. If Wikipedia is
+down, the cards simply show no photo.
 
 ## Architecture
 
@@ -104,7 +117,7 @@ src/
   features/     trips, places, itinerary, map, timeline, share
   hooks/        app-wide hooks
   routes/       one folder per page
-  services/     storage, http, nominatim, osrm (the only code that does I/O)
+  services/     storage, http, nominatim, osrm, wikipedia (the only code that does I/O)
   theme/        colours, type, spacing, radii, shadows, motion, global styles
   mocks/        the sample trip
 ```
@@ -238,6 +251,8 @@ Vitest with Testing Library, aimed at logic that breaks quietly:
 - trips saved before the visited flag existed still loading
 - walking versus "plan transport" between days
 - filling in a day's times, spotting clashes, and building the Google Maps links
+- Wikipedia lookups: following redirects, skipping missing articles, batching
+- trip card status, duplicating a trip, and fitting map tiles to a card
 - a keyboard reorder through the real itinerary panel
 
 Appearance isn't tested, and there are no snapshot tests. A snapshot mostly
@@ -271,6 +286,8 @@ Each of these is a decision, not an oversight.
   their rate limits, and the app tells the user when it does.
 - Very long trips produce long links. The share dialog warns past 4,000
   characters.
+- Photos only appear for places OpenStreetMap links to an English Wikipedia
+  article. Small restaurants and places saved before photos existed have none.
 
 ## Credits
 
@@ -278,4 +295,5 @@ Map data © [OpenStreetMap](https://www.openstreetmap.org/copyright) contributor
 tiles by [OpenFreeMap](https://openfreemap.org) using the
 [OpenMapTiles](https://www.openmaptiles.org/) schema.
 Search by [Nominatim](https://nominatim.org/), walking routes by the
-[FOSSGIS OSRM](https://routing.openstreetmap.de/) server.
+[FOSSGIS OSRM](https://routing.openstreetmap.de/) server. Place descriptions from
+[Wikipedia](https://en.wikipedia.org/) (CC BY-SA), photos from Wikimedia Commons.

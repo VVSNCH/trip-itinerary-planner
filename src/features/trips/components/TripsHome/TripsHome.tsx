@@ -23,7 +23,8 @@ import { todayISO } from '@/utils/dates'
 import { plural } from '@/utils/format'
 import { daysRemovedByRedate } from '../../utils/days'
 import { buildSampleTrip } from '../../utils/sampleTrip'
-import { isPastTrip, sortTrips } from '../../utils/sortTrips'
+import { sortTrips } from '../../utils/sortTrips'
+import { duplicateTrip, tripStatus } from '../../utils/tripStatus'
 import ShareDialog from '@/features/share/components/ShareDialog'
 import { ShrinkTripDialog } from '../ShrinkTripDialog/ShrinkTripDialog'
 import { TripCard } from '../TripCard/TripCard'
@@ -124,7 +125,10 @@ export const TripsHome = () => {
               <GridItem key={trip.id} $order={index}>
                 <TripCard
                   trip={trip}
-                  isPast={isPastTrip(trip, today)}
+                  status={tripStatus(trip, today)}
+                  onDuplicate={() =>
+                    dispatch(importTrip(duplicateTrip(trip, COPY.copyOf(trip.name))))
+                  }
                   onRename={() => setDialog({ kind: 'rename', trip })}
                   onChangeDates={() => setDialog({ kind: 'dates', trip })}
                   onShare={() => setDialog({ kind: 'share', trip })}
