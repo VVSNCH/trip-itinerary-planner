@@ -50,6 +50,7 @@ export const LABELS = {
   DAYS: 'Days',
   SEARCH_PLACES: 'Search places',
   CLEAR_SEARCH: 'Clear search',
+  ALL_IDEAS: 'All ideas',
   CLOSE: 'Close',
   PLANNER: 'Planner',
   SHARE: 'Share',
@@ -151,6 +152,9 @@ export const COPY = {
   onDay: (dayNumber: number) => `On Day ${dayNumber}`,
   searchTooShort: (minLength: number) => `Type at least ${minLength} characters.`,
   searchNoMatch: (query: string) => `No places match “${query}”`,
+  ideasNear: (dayNumber: number) => `Ideas near Day ${dayNumber}`,
+  ideaResults: (idea: string, dayNumber: number) => `${idea} near Day ${dayNumber}`,
+  ideaNoMatch: (idea: string) => `No ${idea.toLowerCase()} found within walking distance`,
   deleteTrip: (name: string) =>
     `“${name}” and all of its places will be removed. This can’t be undone.`,
 } as const
@@ -180,3 +184,16 @@ export const EMPTY_STATES = {
     description: 'The address may be mistyped, or the page no longer exists.',
   },
 } as const
+
+// Search shortcuts shown before anything is typed. Each label maps to the phrase
+// Nominatim understands; "place of worship" is what finds temples.
+export const SEARCH_IDEAS = [
+  { label: 'Temples', query: 'place of worship' },
+  { label: 'Food', query: 'restaurant' },
+  { label: 'Cafés', query: 'cafe' },
+  { label: 'Museums', query: 'museum' },
+  { label: 'Parks', query: 'park' },
+  { label: 'Hotels', query: 'hotel' },
+] as const
+
+export type SearchIdea = (typeof SEARCH_IDEAS)[number]

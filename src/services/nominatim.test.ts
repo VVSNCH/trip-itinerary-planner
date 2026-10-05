@@ -1,4 +1,4 @@
-import { searchPlaces, toViewbox } from './nominatim'
+import { NEARBY_PADDING_DEG, searchPlaces, toViewbox } from './nominatim'
 
 const santaLuzia = {
   place_id: 101,
@@ -75,4 +75,16 @@ it("keeps the place's English Wikipedia article and ignores other languages", as
   const [english, portuguese] = await searchPlaces('miradouro', null)
   expect(english?.wiki).toBe('Miradouro de Santa Luzia')
   expect(portuguese).not.toHaveProperty('wiki')
+})
+
+it('keeps an idea search inside the area around the stops', async () => {
+  const fetchSpy = stubFetch([santaLuzia])
+  const nearby = toViewbox([{ lat: 38.7, lng: -9.2 }], NEARBY_PADDING_DEG)
+  expect(nearby).toBe('-9.22,38.72,-9.18,38.68')
+
+  await searchPlaces('museum', nearby, undefined, true)
+  const [[requested]] = fetchSpy.mock.calls as unknown as [[string]]
+  const url = new URL(requested)
+  expect(url.searchParams.get('viewbox')).toBe(nearby)
+  expect(url.searchParams.get('bounded')).toBe('1')
 })

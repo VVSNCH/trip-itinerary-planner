@@ -1,5 +1,12 @@
 import { useState } from 'react'
-import { COPY, LABELS, MESSAGES, NOMINATIM } from '@/constants'
+import {
+  COPY,
+  LABELS,
+  MESSAGES,
+  NOMINATIM,
+  SEARCH_IDEAS,
+  type SearchIdea,
+} from '@/constants'
 import {
   AddIcon,
   Button,
@@ -15,7 +22,7 @@ import {
 import { Notice, type NoticeTone } from '@/components/feedback'
 import { addPlace, useTrips } from '@/context'
 import type { RequestErrorKind } from '@/services/http'
-import { toViewbox } from '@/services/nominatim'
+import { NEARBY_PADDING_DEG, toViewbox } from '@/services/nominatim'
 import type { PlaceSearchResult, Trip } from '@/types'
 import { formatShortDay } from '@/utils/dates'
 import { plural } from '@/utils/format'
@@ -23,6 +30,9 @@ import { usePlaceSearch } from '../../hooks/usePlaceSearch'
 import { coordinateKey } from '../../utils/coordinateKey'
 import {
   Header,
+  IdeaChips,
+  IdeaHeader,
+  Ideas,
   NoResults,
   Panel,
   ResultList,
@@ -58,8 +68,20 @@ export const SearchPanel = ({
 }: SearchPanelProps) => {
   const { dispatch } = useTrips()
   const [query, setQuery] = useState('')
-  const viewbox = toViewbox(trip.days.flatMap((day) => day.places))
-  const { state, isTooShort, retry } = usePlaceSearch(query, viewbox)
+  const [idea, setIdea] = useState<SearchIdea | null>(null)
+  const tripPlaces = trip.days.flatMap((tripDay) => tripDay.places)
+  const viewbox = toViewbox(tripPlaces)
+  // Ideas look around the day's own stops, or the whole trip while the day is empty.
+  const dayPlaces = trip.days.find((tripDay) => tripDay.id === dayId)?.places ?? []
+  const nearby = toViewbox(
+    dayPlaces.length > 0 ? dayPlaces : tripPlaces,
+    NEARBY_PADDING_DEG
+  )
+  const { state, isTooShort, retry } = usePlaceSearch(
+    idea ? idea.query : query,
+    idea ? nearby : viewbox,
+    idea !== null
+  )
 
   const dayIndex = trip.days.findIndex((day) => day.id === dayId)
   const day = trip.days[dayIndex]
@@ -71,6 +93,11 @@ export const SearchPanel = ({
       tripDay.places.map((place) => [coordinateKey(place), index + 1] as const)
     )
   )
+
+  const handleQueryChange = (value: string) => {
+    setIdea(null)
+    setQuery(value)
+  }
 
   const handleAdd = (result: PlaceSearchResult) =>
     dispatch(addPlace(trip.id, day.id, result))
@@ -100,14 +127,14 @@ export const SearchPanel = ({
       <TextField
         label={LABELS.SEARCH_PLACES}
         value={query}
-        onChange={setQuery}
+        onChange={handleQueryChange}
         startIcon={<SearchIcon />}
         endAdornment={
           query && (
             <IconButton
               label={LABELS.CLEAR_SEARCH}
               size="sm"
-              onClick={() => setQuery('')}
+              onClick={() => handleQueryChange('')}
             >
               <CloseIcon />
             </IconButton>
@@ -115,6 +142,33 @@ export const SearchPanel = ({
         }
         autoFocus
       />
+
+      {!query && !idea && nearby && (
+        <Ideas>
+          <Text variant="overline">{COPY.ideasNear(dayNumber)}</Text>
+          <IdeaChips>
+            {SEARCH_IDEAS.map((option) => (
+              <Button
+                key={option.label}
+                variant="secondary"
+                size="sm"
+                onClick={() => setIdea(option)}
+              >
+                {option.label}
+              </Button>
+            ))}
+          </IdeaChips>
+        </Ideas>
+      )}
+
+      {idea && (
+        <IdeaHeader>
+          <Text variant="subheading">{COPY.ideaResults(idea.label, dayNumber)}</Text>
+          <Button variant="text" size="sm" onClick={() => setIdea(null)}>
+            {LABELS.ALL_IDEAS}
+          </Button>
+        </IdeaHeader>
+      )}
 
       {isTooShort && (
         <Text variant="caption" tone="muted">
@@ -147,13 +201,15 @@ export const SearchPanel = ({
       {state.status === 'done' && state.results.length === 0 && (
         <NoResults>
           <Text variant="subheading" align="center">
-            {COPY.searchNoMatch(query.trim())}
+            {idea ? COPY.ideaNoMatch(idea.label) : COPY.searchNoMatch(query.trim())}
           </Text>
-          <Text tone="secondary" align="center">
-            {MESSAGES.SEARCH_EMPTY_HINT}
-          </Text>
-          <Button variant="text" onClick={() => setQuery('')}>
-            {LABELS.CLEAR_SEARCH}
+          {!idea && (
+            <Text tone="secondary" align="center">
+              {MESSAGES.SEARCH_EMPTY_HINT}
+            </Text>
+          )}
+          <Button variant="text" onClick={() => handleQueryChange('')}>
+            {idea ? LABELS.ALL_IDEAS : LABELS.CLEAR_SEARCH}
           </Button>
         </NoResults>
       )}
