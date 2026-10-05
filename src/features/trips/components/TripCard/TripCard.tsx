@@ -1,8 +1,9 @@
-import { LABELS, buildPlannerPath } from '@/constants'
+import { COPY, LABELS, buildPlannerPath } from '@/constants'
 import {
   CalendarIcon,
   Card,
   Chip,
+  CopyIcon,
   DeleteIcon,
   EditIcon,
   Menu,
@@ -12,6 +13,7 @@ import {
 import type { Trip } from '@/types'
 import { formatRange } from '@/utils/dates'
 import { plural } from '@/utils/format'
+import type { TripStatus } from '../../utils/tripStatus'
 import { TripThumbnail } from '../TripThumbnail/TripThumbnail'
 import {
   Body,
@@ -23,10 +25,19 @@ import {
   TitleRow,
 } from './TripCard.styles'
 
+const statusChip = { upcoming: 'brand', ongoing: 'accent', past: 'neutral' } as const
+
+const statusLabel = (status: TripStatus) => {
+  if (status.kind === 'past') return LABELS.PAST
+  if (status.kind === 'ongoing') return COPY.dayOf(status.day, status.dayCount)
+  return status.daysAway === 1 ? LABELS.TOMORROW : COPY.startsIn(status.daysAway)
+}
+
 export interface TripCardProps {
   trip: Trip
-  isPast: boolean
+  status: TripStatus
   onRename: () => void
+  onDuplicate: () => void
   onChangeDates: () => void
   onShare: () => void
   onDelete: () => void
@@ -34,8 +45,9 @@ export interface TripCardProps {
 
 export const TripCard = ({
   trip,
-  isPast,
+  status,
   onRename,
+  onDuplicate,
   onChangeDates,
   onShare,
   onDelete,
@@ -67,6 +79,12 @@ export const TripCard = ({
                   onSelect: onChangeDates,
                 },
                 {
+                  id: 'duplicate',
+                  label: LABELS.DUPLICATE,
+                  icon: <CopyIcon />,
+                  onSelect: onDuplicate,
+                },
+                {
                   id: 'share',
                   label: LABELS.SHARE,
                   icon: <ShareIcon />,
@@ -92,10 +110,7 @@ export const TripCard = ({
           <Text variant="overline">
             {plural(placeCount, 'place')} · {plural(trip.days.length, 'day')}
           </Text>
-          <Chip
-            tone={isPast ? 'neutral' : 'brand'}
-            label={isPast ? LABELS.PAST : LABELS.UPCOMING}
-          />
+          <Chip tone={statusChip[status.kind]} label={statusLabel(status)} />
         </Footer>
       </Body>
     </Card>

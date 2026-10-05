@@ -205,6 +205,7 @@ a defined failure path rather than an assumption of availability.
 |---|---|---|---|
 | Nominatim | Place search | Rate limit, 429 | Debounce at 500ms, cache results per query, show a clear message |
 | OSRM (FOSSGIS walking server) | Route geometry | Timeout, 5xx | Straight-line fallback, request cancellation, cache per stop list |
+| Wikipedia | Place photos and descriptions | Rate limit, outage | One batched request per day or trip, cached; cards simply show no photo |
 | OpenFreeMap | Vector map imagery | Slow or missing tiles, no WebGL | Neutral background while loading; OSM raster tiles when WebGL is unavailable |
 
 All three are wrapped behind a service module. No component calls fetch

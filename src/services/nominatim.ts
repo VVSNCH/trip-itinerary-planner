@@ -12,6 +12,7 @@ interface NominatimItem {
   type?: string
   category?: string
   address?: Record<string, string>
+  extratags?: Record<string, string> | null
 }
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -25,33 +26,40 @@ const isNominatimItem = (value: unknown): value is NominatimItem =>
   typeof value.display_name === 'string'
 
 const VIEWBOX_PADDING_DEG = 0.1
+// About two kilometres: close enough to walk to from the day's stops.
+export const NEARBY_PADDING_DEG = 0.02
 const EMAIL_PATTERN = /[^\s()<>]+@[^\s()<>]+/
 
 const cache = new Map<string, PlaceSearchResult[]>()
 
 // Biases results towards the places already in the trip without excluding others.
-export const toViewbox = (points: Coordinates[]): string | null => {
+export const toViewbox = (
+  points: Coordinates[],
+  padding = VIEWBOX_PADDING_DEG
+): string | null => {
   if (points.length === 0) return null
   const lats = points.map((point) => point.lat)
   const lngs = points.map((point) => point.lng)
   return [
-    Math.min(...lngs) - VIEWBOX_PADDING_DEG,
-    Math.max(...lats) + VIEWBOX_PADDING_DEG,
-    Math.max(...lngs) + VIEWBOX_PADDING_DEG,
-    Math.min(...lats) - VIEWBOX_PADDING_DEG,
+    Math.min(...lngs) - padding,
+    Math.max(...lats) + padding,
+    Math.max(...lngs) + padding,
+    Math.min(...lats) - padding,
   ]
     .map((value) => Number(value.toFixed(4)))
     .join(',')
 }
 
-const buildUrl = (query: string, viewbox: string | null) => {
+const buildUrl = (query: string, viewbox: string | null, bounded: boolean) => {
   const params = new URLSearchParams({
     q: query,
     format: 'jsonv2',
     addressdetails: '1',
+    extratags: '1',
     limit: String(NOMINATIM.RESULT_LIMIT),
   })
   if (viewbox) params.set('viewbox', viewbox)
+  if (viewbox && bounded) params.set('bounded', '1')
   // Nominatim's usage policy asks apps to identify themselves; browsers can't set User-Agent.
   const email = APP_CONTACT.match(EMAIL_PATTERN)?.[0]
   if (email) params.set('email', email)
@@ -59,6 +67,12 @@ const buildUrl = (query: string, viewbox: string | null) => {
 }
 
 const readable = (value: string | undefined) => value?.replace(/_/g, ' ').trim() ?? ''
+
+// OpenStreetMap tags articles as "en:Title"; only English ones are used.
+const englishArticle = (tag: string | undefined) => {
+  const [lang, ...title] = tag?.split(':') ?? []
+  return lang === 'en' && title.length > 0 ? title.join(':').trim() : undefined
+}
 
 const toResult = (item: NominatimItem): PlaceSearchResult | null => {
   const lat = Number(item.lat)
@@ -77,6 +91,7 @@ const toResult = (item: NominatimItem): PlaceSearchResult | null => {
     .filter(Boolean)
     .join(' ')
   const category = item.type && item.type !== 'yes' ? item.type : item.category
+  const wiki = englishArticle(item.extratags?.wikipedia)
 
   return {
     key: String(item.place_id),
@@ -87,15 +102,18 @@ const toResult = (item: NominatimItem): PlaceSearchResult | null => {
     area: address.suburb ?? address.neighbourhood ?? address.quarter ?? null,
     lat,
     lng,
+    ...(wiki ? { wiki } : {}),
   }
 }
 
 export const searchPlaces = async (
   query: string,
   viewbox: string | null,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  // Bounded keeps results inside the viewbox, for "museums near here" style searches.
+  bounded = false
 ): Promise<PlaceSearchResult[]> => {
-  const url = buildUrl(query.trim(), viewbox)
+  const url = buildUrl(query.trim(), viewbox, bounded)
   const cached = cache.get(url)
   if (cached) return cached
 

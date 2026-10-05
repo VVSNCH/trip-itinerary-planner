@@ -1,10 +1,11 @@
 import { useState, type KeyboardEventHandler } from 'react'
-import { LABELS } from '@/constants'
+import { COPY, LABELS } from '@/constants'
 import {
   Card,
   CheckIcon,
   Chip,
   ClockIcon,
+  ExternalLink,
   DeleteIcon,
   DragHandleIcon,
   EditIcon,
@@ -15,8 +16,10 @@ import {
   OpenInNewIcon,
   StopBadge,
   Text,
+  Thumbnail,
   WarningIcon,
 } from '@/components/common'
+import type { WikiSummary } from '@/services/wikipedia'
 import type { Place } from '@/types'
 import { placeUrl } from '../../utils/directions'
 import { formatPlaceTiming } from '../../utils/timing'
@@ -30,6 +33,7 @@ import {
   NoteButton,
   Row,
   SelectButton,
+  Summary,
   Warning,
 } from './PlaceCard.styles'
 
@@ -47,6 +51,7 @@ export interface PlaceCardProps {
   onMoveDown?: () => void
   onChooseDay?: () => void
   warning?: string
+  summary?: WikiSummary | null
   isDragging?: boolean
   handleRef?: (node: HTMLSpanElement | null) => void
   cardRef?: (node: HTMLDivElement | null) => void
@@ -68,6 +73,7 @@ export const PlaceCard = ({
   onMoveDown,
   onChooseDay,
   warning,
+  summary,
   isDragging = false,
   handleRef,
   cardRef,
@@ -134,6 +140,16 @@ export const PlaceCard = ({
             {timing && <Chip tone="outline" icon={<ClockIcon />} label={timing} />}
             {place.category && <Text variant="overline">{place.category}</Text>}
           </Meta>
+          {isSelected && summary && (
+            <Summary>
+              <Text variant="caption" tone="secondary">
+                {summary.extract}
+              </Text>
+              <ExternalLink href={summary.url} label={COPY.readOnWikipedia(place.name)}>
+                {LABELS.WIKIPEDIA}
+              </ExternalLink>
+            </Summary>
+          )}
           {warning && (
             <Warning>
               <WarningIcon />
@@ -169,6 +185,7 @@ export const PlaceCard = ({
             )}
           </Above>
         </Content>
+        {summary?.thumbnail && <Thumbnail src={summary.thumbnail} />}
         {!readOnly && (
           <Above>
             <Menu

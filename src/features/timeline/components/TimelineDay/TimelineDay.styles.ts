@@ -198,3 +198,15 @@ export const Warning = styled.div`
     font-size: ${({ theme }) => theme.sizes.iconSm};
   }
 `
+
+// The stop's details, with its photo on the right when Wikipedia has one.
+export const StopRow = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: ${({ theme }) => theme.space(3)};
+  min-width: 0;
+
+  & > :first-child {
+    flex: 1;
+  }
+`

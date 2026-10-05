@@ -1,23 +1,37 @@
 import { useTheme } from 'styled-components'
+import { TILES } from '@/constants'
 import type { Trip } from '@/types'
-import { THUMBNAIL, projectPoints } from '../../utils/thumbnail'
-import { Svg } from './TripThumbnail.styles'
+import { THUMBNAIL, thumbnailMap } from '../../utils/thumbnail'
+import { Attribution, Svg } from './TripThumbnail.styles'
 
 const MARKER_RADIUS = 5
+// Tiles overlap by a pixel so no hairline shows where two of them meet.
+const TILE_OVERLAP = 1
 
 export const TripThumbnail = ({ trip }: { trip: Trip }) => {
   const { colors } = useTheme()
-  const points = projectPoints(trip.days.flatMap((day) => day.places))
+  const { tiles, points } = thumbnailMap(trip.days.flatMap((day) => day.places))
+  const { width, height, tileSize } = THUMBNAIL
 
   return (
-    <Svg viewBox={`0 0 ${THUMBNAIL.width} ${THUMBNAIL.height}`} aria-hidden="true">
+    <Svg viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+      {tiles.map((tile) => (
+        <image
+          key={tile.href}
+          href={tile.href}
+          x={tile.x}
+          y={tile.y}
+          width={tileSize + TILE_OVERLAP}
+          height={tileSize + TILE_OVERLAP}
+        />
+      ))}
       {points.length > 1 && (
         <polyline
           points={points.map(([x, y]) => `${x},${y}`).join(' ')}
           fill="none"
           stroke={colors.map.route}
-          strokeOpacity={0.5}
-          strokeWidth={2}
+          strokeOpacity={0.85}
+          strokeWidth={2.5}
           strokeLinejoin="round"
         />
       )}
@@ -32,6 +46,11 @@ export const TripThumbnail = ({ trip }: { trip: Trip }) => {
           strokeWidth={1.5}
         />
       ))}
+      {tiles.length > 0 && (
+        <Attribution x={width - 6} y={height - 6} textAnchor="end">
+          {TILES.ATTRIBUTION_TEXT}
+        </Attribution>
+      )}
     </Svg>
   )
 }

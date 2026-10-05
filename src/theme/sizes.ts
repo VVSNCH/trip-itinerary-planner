@@ -25,6 +25,8 @@ export const sizes = {
   logoMark: '28px',
 
   thumbnailHeight: '176px',
+  thumbSm: '48px',
+  thumbMd: '64px',
 
   sidePanelWidth: '420px',
   tabletMapHeight: '420px',

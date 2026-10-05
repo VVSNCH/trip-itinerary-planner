@@ -8,6 +8,7 @@ import {
   ExternalLink,
   StopBadge,
   Text,
+  Thumbnail,
   TravelIcon,
   WarningIcon,
 } from '@/components/common'
@@ -26,6 +27,7 @@ import {
   summarizeDay,
 } from '@/features/itinerary/utils/timing'
 import { describeTransfer } from '@/features/itinerary/utils/walking'
+import type { WikiSummary } from '@/services/wikipedia'
 import type { Day, Place } from '@/types'
 import { formatLongDay, formatShortDay } from '@/utils/dates'
 import {
@@ -39,6 +41,7 @@ import {
   OpenButton,
   Rail,
   StopNode,
+  StopRow,
   Time,
   TravelBody,
   TravelLinks,
@@ -54,6 +57,7 @@ export interface TimelineDayProps {
   now: { minutes: number; label: string }
   onOpen: () => void
   onToggleVisited?: (place: Place) => void
+  summaryFor: (place: Place) => WikiSummary | null
 }
 
 const MINUTES_PER_HOUR = 60
@@ -67,6 +71,7 @@ export const TimelineDay = ({
   now,
   onOpen,
   onToggleVisited,
+  summaryFor,
 }: TimelineDayProps) => {
   const span = daySpan(day.places)
   const isBusy = plannedMinutes(day.places) > BUSY_DAY_MINS
@@ -164,6 +169,7 @@ export const TimelineDay = ({
         const isVisited = place.visited === true
         const isOver = isPlaceOver(place, progress, now.minutes)
         const isLastStop = index === day.places.length - 1
+        const thumbnail = summaryFor(place)?.thumbnail
         const node = (
           <StopNode $isOver={isOver && !isVisited}>
             <StopBadge number={index + 1} visited={isVisited} />
@@ -192,30 +198,33 @@ export const TimelineDay = ({
                   node
                 )}
               </Rail>
-              <Body>
-                <Text variant="bodyStrong">{place.name}</Text>
-                <Text variant="overline">
-                  {[
-                    place.category,
-                    place.durationMins && formatDuration(place.durationMins),
-                  ]
-                    .filter(Boolean)
-                    .join(' · ')}
-                </Text>
-                {place.note && (
-                  <Text variant="caption" tone="secondary">
-                    {place.note}
+              <StopRow>
+                <Body>
+                  <Text variant="bodyStrong">{place.name}</Text>
+                  <Text variant="overline">
+                    {[
+                      place.category,
+                      place.durationMins && formatDuration(place.durationMins),
+                    ]
+                      .filter(Boolean)
+                      .join(' · ')}
                   </Text>
-                )}
-                {clashes.has(place.id) && (
-                  <Warning>
-                    <WarningIcon />
-                    <Text variant="caption" tone="danger">
-                      {clashes.get(place.id)}
+                  {place.note && (
+                    <Text variant="caption" tone="secondary">
+                      {place.note}
                     </Text>
-                  </Warning>
-                )}
-              </Body>
+                  )}
+                  {clashes.has(place.id) && (
+                    <Warning>
+                      <WarningIcon />
+                      <Text variant="caption" tone="danger">
+                        {clashes.get(place.id)}
+                      </Text>
+                    </Warning>
+                  )}
+                </Body>
+                {thumbnail && <Thumbnail src={thumbnail} />}
+              </StopRow>
             </Entry>
           </Fragment>
         )

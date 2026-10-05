@@ -8,8 +8,10 @@ export interface Place {
   time: string | null
   note: string | null
   durationMins: number | null
-  // Optional so trips saved, or shared, before it existed still load.
+  // Optional so trips saved, or shared, before they existed still load.
   visited?: boolean
+  // The English Wikipedia article for the place, when OpenStreetMap links one.
+  wiki?: string
 }
 
 export interface Day {

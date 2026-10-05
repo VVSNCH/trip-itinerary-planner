@@ -10,7 +10,11 @@ export type PlaceSearchState =
   | { status: 'done'; results: PlaceSearchResult[] }
   | { status: 'error'; kind: RequestErrorKind }
 
-export const usePlaceSearch = (query: string, viewbox: string | null) => {
+export const usePlaceSearch = (
+  query: string,
+  viewbox: string | null,
+  bounded = false
+) => {
   const [state, setState] = useState<PlaceSearchState>({ status: 'idle' })
   const [attempt, setAttempt] = useState(0)
   const trimmed = query.trim()
@@ -25,7 +29,7 @@ export const usePlaceSearch = (query: string, viewbox: string | null) => {
     const controller = new AbortController()
     setState({ status: 'loading' })
     const timer = setTimeout(() => {
-      searchPlaces(trimmed, viewbox, controller.signal)
+      searchPlaces(trimmed, viewbox, controller.signal, bounded)
         .then((results) => setState({ status: 'done', results }))
         .catch((error: unknown) => {
           if (controller.signal.aborted) return
@@ -40,7 +44,7 @@ export const usePlaceSearch = (query: string, viewbox: string | null) => {
       clearTimeout(timer)
       controller.abort()
     }
-  }, [trimmed, viewbox, attempt])
+  }, [trimmed, viewbox, bounded, attempt])
 
   const retry = () => setAttempt((count) => count + 1)
   const isTooShort = trimmed.length > 0 && trimmed.length < NOMINATIM.MIN_QUERY_LENGTH

@@ -80,6 +80,7 @@ export const tripReducer = (state: TripState, action: TripAction): TripState => 
           time: null,
           note: null,
           durationMins: null,
+          ...(place.wiki ? { wiki: place.wiki } : {}),
         }
         return days.map((day) =>
           day.id === dayId ? { ...day, places: [...day.places, added] } : day

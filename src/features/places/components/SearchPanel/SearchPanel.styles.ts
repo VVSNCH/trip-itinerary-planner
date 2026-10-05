@@ -50,3 +50,22 @@ export const NoResults = styled.div`
   gap: ${({ theme }) => theme.space(1)};
   padding: ${({ theme }) => theme.space(6, 2)};
 `
+
+export const Ideas = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.space(2)};
+`
+
+export const IdeaChips = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${({ theme }) => theme.space(2)};
+`
+
+export const IdeaHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: ${({ theme }) => theme.space(2)};
+`

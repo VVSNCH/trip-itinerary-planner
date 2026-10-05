@@ -7,9 +7,11 @@ import {
   ClockIcon,
   StopBadge,
   Text,
+  Thumbnail,
 } from '@/components/common'
 import { formatPlaceTiming } from '@/features/itinerary/utils/timing'
 import { walkMinutes } from '@/features/itinerary/utils/walking'
+import { useWikiSummaries } from '@/features/places/hooks/useWikiSummaries'
 import type { Place } from '@/types'
 import { Actions, Card, Details, Meta, Title } from './StopCard.styles'
 
@@ -21,6 +23,7 @@ export interface StopCardProps {
 
 // The mobile map's bottom card: the chosen stop, and a way to step through the day.
 export const StopCard = ({ places, selectedPlaceId, onSelectPlace }: StopCardProps) => {
+  const summaryFor = useWikiSummaries(places)
   const selectedIndex = places.findIndex((place) => place.id === selectedPlaceId)
   const index = Math.max(selectedIndex, 0)
   const place = places[index]
@@ -29,6 +32,7 @@ export const StopCard = ({ places, selectedPlaceId, onSelectPlace }: StopCardPro
   const previous = places[index - 1]
   const next = places[index + 1]
   const timing = formatPlaceTiming(place)
+  const thumbnail = summaryFor(place)?.thumbnail
   const position = [
     COPY.stopPosition(index + 1, places.length),
     previous ? COPY.walkFrom(walkMinutes(previous, place), previous.name) : null,
@@ -48,6 +52,7 @@ export const StopCard = ({ places, selectedPlaceId, onSelectPlace }: StopCardPro
             {place.address}
           </Text>
         </Details>
+        {thumbnail && <Thumbnail src={thumbnail} size="md" />}
       </Title>
       <Meta>
         {timing && <Chip tone="outline" icon={<ClockIcon />} label={timing} />}
